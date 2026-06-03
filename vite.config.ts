@@ -22,4 +22,4 @@ export default defineConfig(() => {
     },
   };
 });
-// force fresh build with write permissions
+// trigger deploy with github actions source enabled
