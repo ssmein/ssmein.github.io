@@ -1,0 +1,6 @@
+{
+  "name": "BIM Engineering Portfolio",
+  "description": "A clean, modern portfolio for a Building Information Modeling (BIM) & Computational Design Engineer.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
