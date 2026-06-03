@@ -22,3 +22,4 @@ export default defineConfig(() => {
     },
   };
 });
+// force fresh build with write permissions
