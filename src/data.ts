@@ -1,10 +1,10 @@
 import { Project, Experience, SkillGroup, Stat } from './types';
 
 export const statsData: Stat[] = [
-  { id: 'years', count: 6, suffix: 'Y+', label: 'Years Experience' },
-  { id: 'projects', count: 40, suffix: '+', label: 'Projects Completed' },
+  { id: 'years', count: 4, suffix: 'Y+', label: 'Years Experience (Construction + Data)' },
+  { id: 'projects', count: 20, suffix: '+', label: 'Dashboard Delivered' },
   { id: 'certs', count: 3, suffix: ' Certs', label: 'Professional Certifications' },
-  { id: 'scripts', count: 124, suffix: ' Scripts', label: 'BIM Automation Scripts' }
+  { id: 'scripts', count: 12, suffix: ' Scripts', label: 'BIM Automation Scripts' }
 ];
 
 export const skillGroupsData: SkillGroup[] = [
@@ -12,30 +12,30 @@ export const skillGroupsData: SkillGroup[] = [
     category: 'BIM Platforms',
     skills: [
       { name: 'Autodesk Revit', level: 95 },
-      { name: 'Navisworks Manage', level: 88 },
-      { name: 'AutoCAD / Civil 3D', level: 90 },
+      { name: 'Navisworks Manage', level: 80 },
+      { name: 'AutoCAD / Civil 3D', level: 50 },
       { name: 'Dynamo Visual Scripting', level: 85 },
-      { name: 'IFC Schema / OpenBIM', level: 80 }
+      { name: 'IFC Schema / OpenBIM', level: 30 }
     ]
   },
   {
     category: 'Computational Design',
     skills: [
-      { name: 'Python (RevitPythonShell)', level: 78 },
-      { name: 'SQL (PostgreSQL / SQLite)', level: 65 },
+      { name: 'Python', level: 80 },
+      { name: 'SQL', level: 71 },
       { name: 'Dynamo Custom Nodes', level: 82 },
-      { name: 'Revit API & C# Add-Ins', level: 48 },
-      { name: 'Shell Scripting / CLI tools', level: 55 }
+      { name: 'Revit API', level: 25 },
+      { name: 'Version Control (Git/GitHub)', level: 50 }
     ]
   },
   {
     category: 'Analytics & Automation',
     skills: [
-      { name: 'Pandas / NumPy Data Wrangling', level: 75 },
-      { name: 'Power BI / DAX Dashboards', level: 72 },
+      { name: 'Pandas / NumPy Data Wrangling', level: 85 },
+      { name: 'Power BI / DAX Dashboards', level: 75 },
       { name: 'Matplotlib & Seaborn Visuals', level: 70 },
       { name: 'Predictive Modeling (scikit-learn)', level: 55 },
-      { name: 'Generative Design Algorithms', level: 50 }
+      { name: 'Information Management (ISO 19650)', level: 2 }
     ]
   }
 ];
@@ -106,7 +106,7 @@ export const projectsData: Project[] = [
 export const experienceData: Experience[] = [
   {
     id: 'shine',
-    period: 'Dec 2024 — Present',
+    period: 'Dec 2024 — May 2026',
     role: 'Data Analyst',
     company: 'Shine Co. Ltd.',
     location: 'Bangkok, Thailand',

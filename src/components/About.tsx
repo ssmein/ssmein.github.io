@@ -73,7 +73,7 @@ export default function About({ isDarkMode }: { isDarkMode: boolean }) {
           <div className="space-y-2">
             <p className={`font-mono text-xs sm:text-[13px] tracking-[6px] uppercase ${isDarkMode ? 'text-[#00d4ff]' : 'text-blue-600'}`}>/* About Me */</p>
             <h2 className={`font-display text-4xl sm:text-5xl tracking-[2px] uppercase ${isDarkMode ? 'text-white' : 'text-slate-900'}`}>
-              Digital Twin Builder
+              Civil Engineer
             </h2>
           </div>
 
@@ -81,13 +81,10 @@ export default function About({ isDarkMode }: { isDarkMode: boolean }) {
             isDarkMode ? 'text-[#4a6d8c]' : 'text-slate-650'
           }`}>
             <p>
-              I am a <strong className={`font-semibold ${isDarkMode ? 'text-[#cde8ff]' : 'text-slate-950'}`}>BIM Engineer</strong> who views modern buildings not merely as physical assemblies of concrete and steel, but as living, breathing spatial metadata systems. My practice centers on computational workflows that make complex coordinates and construction specifications accessible, auditable, and automated.
+              I am a <strong className={`font-semibold ${isDarkMode ? 'text-[#cde8ff]' : 'text-slate-950'}`}>Civil Engineer</strong> with experience in construction and data analytics.I see modern buildings not merely as physical assemblies of concrete and steel, but as living, breathing spatial metadata systems. My practice centers on computational workflows that make complex coordinates and construction specifications accessible, auditable, and automated.
             </p>
             <p>
-              By combining structural fundamentals with scripting stacks (<strong className={`font-semibold ${isDarkMode ? 'text-[#cde8ff]' : 'text-slate-950'}`}>Python, Revit API, and data analytics tools</strong>), I automate exhausting manual tasks, align coordinate arrays automatically, and extract structured databases directly from rich 3D geometries.
-            </p>
-            <p>
-              Based in Southeast Asia's rapidly changing skylines, I lead BIM model design coordination, resolve high-density clash clusters, and build analytical pipelines that help construction executives monitor development progress in real-time.
+              By combining construction fundamentals with programming (<strong className={`font-semibold ${isDarkMode ? 'text-[#cde8ff]' : 'text-slate-950'}`}>Python, SQL, and data analytics tools</strong>), I can transform data into structured reports and decision support pipelines and support on delivering smarter, more efficient project outcomes. 
             </p>
           </div>
         </div>

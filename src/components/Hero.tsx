@@ -235,14 +235,14 @@ export default function Hero({ isDarkMode }: { isDarkMode: boolean }) {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.8 }}
           className={`min-h-[40px] font-mono text-sm sm:text-base md:text-lg flex items-center gap-1.5 mb-8 select-all ${
-            isDarkMode ? 'text-[#39ff14]' : 'text-blue-600'
+            isDarkMode ? 'text-[#00d4ff]' : 'text-blue-600'
           }`}
         >
           <span className={`${isDarkMode ? 'text-[#00d4ff] opacity-60' : 'text-slate-650 opacity-80'} font-semibold`}>&gt;</span>
           <span className={`${isDarkMode ? 'text-[#cde8ff] opacity-70' : 'text-slate-800 opacity-80'} font-light`}>saisoummein</span>
-          <span className={`${isDarkMode ? 'text-[#39ff14]' : 'text-blue-600'} font-semibold`}>~</span>
+          <span className={`${isDarkMode ? 'text-[#00d4ff]' : 'text-blue-600'} font-semibold`}>~</span>
           <span>{displayedText}</span>
-          <span className={`inline-block w-[8px] h-[1.1em] ${isDarkMode ? 'bg-[#39ff14]' : 'bg-blue-600'} animate-[blink_0.9s_step-end_infinite] align-middle`} />
+          <span className={`inline-block w-[8px] h-[1.1em] ${isDarkMode ? 'bg-[#00d4ff]' : 'bg-blue-600'} animate-[blink_0.9s_step-end_infinite] align-middle`} />
         </motion.div>
 
         {/* Call to Actions */}
