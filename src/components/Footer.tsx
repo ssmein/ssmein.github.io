@@ -11,7 +11,7 @@ export default function Footer({ isDarkMode }: { isDarkMode: boolean }) {
         {/* Left Side */}
         <div className="flex items-center gap-2">
           <Compass className={`w-4 h-4 animate-spin-slow ${isDarkMode ? 'text-[#00d4ff]' : 'text-blue-600'}`} />
-          <span>© 2026 SAISOUMMEIN &bull; BIM ENGINEER</span>
+          <span>© 2026 SAISOUMMEIN &bull; CIVIL ENGINEER</span>
         </div>
 
         {/* Right Side */}

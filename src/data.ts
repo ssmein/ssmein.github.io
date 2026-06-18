@@ -1,9 +1,11 @@
 import { Project, Experience, SkillGroup, Stat } from './types';
+import revitModel1 from './assets/images/revit_model_1_1780650947113.png';
+import revitModel2 from './assets/images/revit_model_2_1780650963970.png';
 
 export const statsData: Stat[] = [
   { id: 'years', count: 4, suffix: 'Y+', label: 'Years Experience (Construction + Data)' },
-  { id: 'projects', count: 20, suffix: '+', label: 'Dashboard Delivered' },
-  { id: 'certs', count: 3, suffix: ' Certs', label: 'Professional Certifications' },
+  { id: 'projects', count: 5, suffix: '+', label: 'Dashboard Delivered' },
+  { id: 'certs', count: 5, suffix: ' Certs', label: 'Professional Certifications' },
   { id: 'scripts', count: 12, suffix: ' Scripts', label: 'BIM Automation Scripts' }
 ];
 
@@ -42,6 +44,35 @@ export const skillGroupsData: SkillGroup[] = [
 
 export const projectsData: Project[] = [
   {
+    id: 'revit-modelling',
+    title: 'BIM Modelling in Autodesk Revit',
+    category: 'Modelling',
+    type: 'BIM Modelling',
+    description: 'A structural and architectural modeling showcase featuring 2 conceptual models built natively in Autodesk Revit, serving as foundational spatial assets.',
+    longDescription: 'This project highlights precise structural, architectural, and spatial conceptual modeling built in Autodesk Revit. Designed to serve as highly accurate structural frameworks, these initial 3D models establish parametric foundations for complex space layouts. The project is structured dynamically to scale as more models are uploaded, currently featuring two core models showing concrete framing, structural partitions, and clear structural coordination grids.',
+    tags: ['Revit', 'BIM Modelling', 'Structural Design', 'Architectural Concept', '3D Rendering'],
+    metrics: [
+      { label: 'Active Models', value: '2 Models' },
+      { label: 'Model Accuracy', value: 'LOD 300' },
+      { label: 'Revit Version', value: '25.0 / API Core' }
+    ],
+    impact: 'Establishes a neat, clean, fully parameterized structural starting point that removes model inconsistencies and sets up downstream multi-discipline coordination.',
+    images: [
+      revitModel1,
+      revitModel2
+    ],
+    technicalSpecs: [
+      { label: 'Platform', value: 'Autodesk Revit' },
+      { label: 'Precision Level', value: 'LOD 300' },
+      { label: 'Disciplines', value: 'Architectural / Structural' },
+      { label: 'Model Volume', value: '2 Conceptual Models' }
+    ],
+    diagrams: [
+      { title: '01. Conceptual Building Model', url: '', caption: 'Structural and architectural 3D layout designed inside Revit showing structural column grid.' },
+      { title: '02. Structural Framing Detail', url: '', caption: 'MEP routing and framing detail model view for multi-discipline clash prevention.' }
+    ]
+  },
+  {
     id: 'revit-auto',
     title: 'Revit Parametric Automation Suite',
     category: 'Automation',
@@ -54,7 +85,25 @@ export const projectsData: Project[] = [
       { label: 'Error Margin', value: '-95%' },
       { label: 'Families Automated', value: '50+' }
     ],
-    impact: 'Automated 12 sequential manual tasks down to a 1-click batch run, drastically increasing accuracy and delivering high consistency in multi-discipline models.'
+    impact: 'Automated 12 sequential manual tasks down to a 1-click batch run, drastically increasing accuracy and delivering high consistency in multi-discipline models.',
+    images: [
+      'https://images.unsplash.com/photo-1503387762-592deb58ef4e?q=80&w=1200&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1581094288338-2314dddb7eed?q=80&w=1200&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=1200&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=1200&auto=format&fit=crop'
+    ],
+    technicalSpecs: [
+      { label: 'API Integration', value: 'Revit API / DB Link' },
+      { label: 'Framework', value: 'Python / Dynamo Core' },
+      { label: 'Interoperability', value: 'IFC / COBie Metadata' },
+      { label: 'Task Schema', value: '1-Click JSON Batch' }
+    ],
+    diagrams: [
+      { title: '01. Automation Suite UI', url: '', caption: 'The parameter mapping dashboard running on a multi-thread background worker inside Revit.' },
+      { title: '02. Data Mapping Matrix', url: '', caption: 'Schematic flow showing data transformation from structural coordinates into parameters.' },
+      { title: '03. Family Parametric Schema', url: '', caption: 'Mapping electrical containment paths across custom parametric assemblies.' },
+      { title: '04. Thread Sync Logic', url: '', caption: 'Thread management showing concurrent worker queue resolving structural intersections.' }
+    ]
   },
   {
     id: 'kpi-dash',
@@ -69,22 +118,25 @@ export const projectsData: Project[] = [
       { label: 'Data Points', value: '500,000+' },
       { label: 'Stakeholders Served', value: '25+' }
     ],
-    impact: 'Replaced weekly spreadsheet reporting with a live dashboard, empowering leads to identify supply shortages and coordinate directly with site managers.'
-  },
-  {
-    id: 'ml-clash',
-    title: 'ML Clash Prioritization Engine',
-    category: 'Machine Learning',
-    type: 'Machine Learning',
-    description: 'Trained a gradient-boosted classifier on 50,000 historical Navisworks clashes to auto-triage critical MEP conflicts.',
-    longDescription: 'Faced with thousands of search-set clashes that delay coordination cycles, we trained an XGBoost model on historic projects metadata. By digesting parameters like discipline type, structural proximity, element density, and coordinate positions, the engine predicts whether a clash represents a critical structural blocker vs. a negligible field adjustment, allowing engineering coordinators to focus their meetings.',
-    tags: ['scikit-learn', 'XGBoost', 'Python', 'Navisworks XML', 'Pandas'],
-    metrics: [
-      { label: 'QA Efficiency', value: '+60%' },
-      { label: 'Prediction Precision', value: '92.4%' },
-      { label: 'Clashes Analyzed', value: '50,000+' }
+    impact: 'Replaced weekly spreadsheet reporting with a live dashboard, empowering leads to identify supply shortages and coordinate directly with site managers.',
+    images: [
+      'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1200&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1200&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1504868584819-f8e8b446d2e4?q=80&w=1200&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1581092918056-0c4c3acd3789?q=80&w=1200&auto=format&fit=crop'
     ],
-    impact: 'Cut coordination meeting prep from 8 hours per week down to 1.5 hours, letting engineers spend time resolving structural constraints instead of filtering spreadsheets.'
+    technicalSpecs: [
+      { label: 'Data Ingress', value: 'PostgreSQL Warehousing' },
+      { label: 'Integration Feed', value: 'Primavera P6 & Procore' },
+      { label: 'Processing Layer', value: 'Pandas / NumPy Engine' },
+      { label: 'Visual Analytics', value: 'Power BI Gateway' }
+    ],
+    diagrams: [
+      { title: '01. Analytical Overview', url: '', caption: 'BIM model coordinate validation matching active warehouse procurement milestones.' },
+      { title: '02. Live Warehouse Stream', url: '', caption: 'Database schema tracing chronological project completion against materials delivery.' },
+      { title: '03. Procurement Schedule', url: '', caption: 'Chronological Gantt chart mapping supply shortages directly onto physical elements.' },
+      { title: '04. Stakeholder Control', url: '', caption: 'Admin command panel showing real-time feedback loops connecting site leads with supply lines.' }
+    ]
   },
   {
     id: 'asset-db',
@@ -99,7 +151,25 @@ export const projectsData: Project[] = [
       { label: 'Data Accuracy', value: '99.9%' },
       { label: 'Database Rows', value: '120k+' }
     ],
-    impact: 'Transferred 30,000 MEP elements from 3D models directly to client facilities databases, zeroing out manual key-in mistakes and setting up predictive asset tracking.'
+    impact: 'Transferred 30,000 MEP elements from 3D models directly to client facilities databases, zeroing out manual key-in mistakes and setting up predictive asset tracking.',
+    images: [
+      'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?q=80&w=1200&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1544383835-bda2bc66a55d?q=80&w=1200&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1587560699334-cc4ff634909a?q=80&w=1200&auto=format&fit=crop',
+      'https://images.unsplash.com/photo-1518770660439-4636190af475?q=80&w=1200&auto=format&fit=crop'
+    ],
+    technicalSpecs: [
+      { label: 'Engine Schema', value: 'PostgreSQL Relational' },
+      { label: 'Model Parsing', value: 'IFC-OpenShell CLI' },
+      { label: 'Exposed API', value: 'FastAPI Uvicorn' },
+      { label: 'Containerization', value: 'Docker Engine' }
+    ],
+    diagrams: [
+      { title: '01. Facility Layout', url: '', caption: 'Operation and maintenance assets synced across operational REST endpoints.' },
+      { title: '02. Model Parsing Log', url: '', caption: 'Dynamic logs translating IFC class hierarchies into relational rows.' },
+      { title: '03. DB Relational Mapping', url: '', caption: 'Normalized SQL tables matching GUIDs to physical maintenance tickets.' },
+      { title: '04. Endpoint Test Playground', url: '', caption: 'REST Client displaying payload responses for operational asset queries.' }
+    ]
   }
 ];
 
@@ -116,7 +186,7 @@ export const experienceData: Experience[] = [
       'Designed and deployed automated Power BI dashboards for regional dealerships, enabling real time KPI tracking.',
       'Transformed raw multisource datasets into structured reports, assist in data pipeline management and dashboard automation.'
     ],
-    skillsUsed: ['Power BI', 'SQL', 'Python', 'Tableau', 'Data Automation', 'MS Excel']
+    skillsUsed: ['Power BI', 'SQL', 'Python', 'MS Excel']
   },
   {
     id: 'marketingape',
@@ -125,11 +195,11 @@ export const experienceData: Experience[] = [
     company: 'marketingApe Co. Ltd.',
     location: 'Bangkok, Thailand',
     description: [
-      'Managed end-to-end Marketing Mix Modeling (MMM) projects from data collection, cleansing, and integration across multiple data channels to quantify performance impact and optimize resource allocation.',
+      'Managed end-to-end Marketing Mix Modeling (MMM) projects from data collection, cleaning, and ETL across multiple data channels to quantify performance impact and optimize resource allocation.',
       'Collaborated with development teams to design analytics tools which enable clients to monitor real time performance.',
       'Authored comprehensive Product Requirement Documents (PRDs) to guide analytics tool development.'
     ],
-    skillsUsed: ['Marketing Mix Modeling (MMM)', 'Data Cleansing', 'Python', 'Data Integration', 'Product Design', 'SQL']
+    skillsUsed: ['Marketing Mix Modeling (MMM)', 'Data Cleaning', 'Python', 'ETL', 'Product Design', 'SQL']
   },
   {
     id: 'seikitokyu',
@@ -147,7 +217,7 @@ export const experienceData: Experience[] = [
   },
   {
     id: 'shwetaung',
-    period: 'Nov 2022 — Mar 2023',
+    period: 'Nov 2020 - Mar 2021',
     role: 'Civil Engineer',
     company: 'Shwe Taung E&C Co. Ltd.',
     location: 'Yangon, Myanmar',

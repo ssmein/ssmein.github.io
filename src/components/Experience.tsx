@@ -112,7 +112,7 @@ export default function Experience({ isDarkMode }: { isDarkMode: boolean }) {
                   }`}>
                     <span className={`font-mono text-xs uppercase tracking-wider self-center mr-1 ${
                       isDarkMode ? 'text-[#4a6d8c]' : 'text-slate-400'
-                    }`}>Deployed:</span>
+                    }`}>Skills Used:</span>
                     {exp.skillsUsed.map((skill) => (
                       <span
                         key={skill}

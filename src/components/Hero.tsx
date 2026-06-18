@@ -125,29 +125,13 @@ export default function Hero({ isDarkMode }: { isDarkMode: boolean }) {
               className="flex items-baseline flex-nowrap gap-x-2 sm:gap-x-4 md:gap-x-6 lg:gap-x-8 select-none w-full" 
               style={{ fontSize: 'clamp(2.2rem, 13vw, 11rem)' }}
             >
-              {/* BIM with relative container for vertical ENGINEER alignments */}
+              {/* BIM without vertical ENGINEER alignments */}
               <div className="relative inline-block leading-none">
                 <span className={`font-sans font-black tracking-[-0.03em] leading-none ${
                   isDarkMode ? 'text-white' : 'text-black'
                 }`}>
                   BIM
                 </span>
-
-                {/* Highly responsive vertical aligned word "ENGINEER" below M */}
-                <div className="absolute right-0 top-[102%] w-full flex flex-col items-end">
-                  <div className="flex flex-col items-center mr-[4.2%] sm:mr-[4%] md:mr-[3.8%] lg:mr-[3.5%] w-6 space-y-[2px] sm:space-y-[4px] md:space-y-[5px]">
-                    {"ENGINEER".split("").map((char, index) => (
-                      <span
-                        key={index}
-                        className={`leading-none font-mono text-[7px] sm:text-[9px] md:text-[10px] lg:text-[11px] font-semibold tracking-[0.15em] ${
-                          isDarkMode ? 'text-slate-400' : 'text-[#8a929d]'
-                        }`}
-                      >
-                        {char}
-                      </span>
-                    ))}
-                  </div>
-                </div>
               </div>
 
               {/* Portfolio Word with custom glowing dot on 'i' without overlapping with l */}
@@ -162,7 +146,7 @@ export default function Hero({ isDarkMode }: { isDarkMode: boolean }) {
                     style={{ 
                       width: '0.14em', 
                       height: '0.14em',
-                      top: '-0.02em',
+                      top: '0.08em',
                       left: '50%',
                       transform: 'translateX(-50%)',
                       boxShadow: '0 0 12px 3px rgba(0, 212, 255, 0.9), 0 0 24px 6px rgba(0, 90, 240, 0.6)'
@@ -217,16 +201,16 @@ export default function Hero({ isDarkMode }: { isDarkMode: boolean }) {
           </motion.div>
         </div>
 
-        {/* Subtitle with compact spacing below ENGINEER word */}
+        {/* Subtitle with compact spacing below main branding */}
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
-          className={`max-w-2xl font-sans text-lg sm:text-xl md:text-2xl font-light tracking-[1px] mb-6 mt-20 sm:mt-26 md:mt-32 lg:mt-38 ${
-            isDarkMode ? 'text-[#4a6d8c]' : 'text-slate-650'
+          className={`max-w-2xl font-sans text-lg sm:text-xl md:text-2xl font-light tracking-[1px] mb-6 mt-6 sm:mt-8 md:mt-10 lg:mt-12 ${
+            isDarkMode ? 'text-[#4a6d8c]' : 'text-slate-600'
           }`}
         >
-          Bridging <strong className={`${isDarkMode ? 'text-[#cde8ff]' : 'text-slate-900'} font-medium`}>Design &amp; Data</strong> Through Code
+          Bridging <strong className={`${isDarkMode ? 'text-[#cde8ff]' : 'text-slate-900'} font-medium`}>Construction &amp; Engineering</strong> through Data
         </motion.p>
 
         {/* Code Terminal Display */}

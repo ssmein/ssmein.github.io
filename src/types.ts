@@ -1,13 +1,16 @@
 export interface Project {
   id: string;
   title: string;
-  category: 'Automation' | 'Data Analytics' | 'Machine Learning' | 'Database' | 'All';
+  category: 'Modelling' | 'Automation' | 'Data Analytics' | 'Database' | 'All';
   type: string;
   description: string;
   longDescription: string;
   tags: string[];
   metrics: { label: string; value: string }[];
   impact: string;
+  images?: string[];
+  technicalSpecs?: { label: string; value: string }[];
+  diagrams?: { title: string; url: string; caption: string }[];
 }
 
 export interface Experience {

@@ -6,9 +6,11 @@ interface NavbarProps {
   activeSection: string;
   isDarkMode: boolean;
   toggleTheme: () => void;
+  isDetailedMode?: boolean;
+  onCloseDetail?: () => void;
 }
 
-export default function Navbar({ activeSection, isDarkMode, toggleTheme }: NavbarProps) {
+export default function Navbar({ activeSection, isDarkMode, toggleTheme, isDetailedMode, onCloseDetail }: NavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -31,9 +33,19 @@ export default function Navbar({ activeSection, isDarkMode, toggleTheme }: Navba
   const handleLinkClick = (e: MouseEvent<HTMLAnchorElement>, href: string) => {
     e.preventDefault();
     setIsMobileMenuOpen(false);
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+    if (isDetailedMode && onCloseDetail) {
+      onCloseDetail();
+      setTimeout(() => {
+        const element = document.querySelector(href);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      }, 50);
+    } else {
+      const element = document.querySelector(href);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
     }
   };
 

@@ -45,13 +45,7 @@ export default function Contact({ isDarkMode }: { isDarkMode: boolean }) {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           {/* Info Side */}
-          <div className="lg:col-span-5 space-y-6">
-            <p className={`font-sans font-light text-sm sm:text-base leading-relaxed ${
-              isDarkMode ? 'text-[#4a6d8c]' : 'text-slate-600'
-            }`}>
-              I am open to BIM management opportunities, technical computational design consulting, and joint ventures that push standard drafting pipelines into the spatial intelligence age. Reach out to coordinate or query a technical model.
-            </p>
-
+          <div className="lg:col-span-12 xl:col-span-5 space-y-6 lg:w-full">
             <div className={`flex flex-col gap-3 font-mono text-sm ${isDarkMode ? 'text-[#cde8ff]' : 'text-slate-800'}`}>
               <a
                 href="mailto:ssoummein@gmail.com"
@@ -68,7 +62,7 @@ export default function Contact({ isDarkMode }: { isDarkMode: boolean }) {
               </a>
 
               <a
-                href="https://linkedin.com"
+                href="https://linkedin.com/in/saisoummein/"
                 target="_blank"
                 rel="noreferrer"
                 className={`flex items-center gap-4 p-4 transition-all border ${
@@ -80,11 +74,11 @@ export default function Contact({ isDarkMode }: { isDarkMode: boolean }) {
                 <Linkedin className={`w-4 h-4 transition-colors ${
                   isDarkMode ? 'text-[#4a6d8c] group-hover:text-[#00d4ff]' : 'text-slate-400 group-hover:text-blue-700'
                 }`} />
-                <span>linkedin.com/in/sai-soum-mein</span>
+                <span>linkedin.com/in/saisoummein/</span>
               </a>
 
               <a
-                href="https://github.com"
+                href="https://github.com/ssmein"
                 target="_blank"
                 rel="noreferrer"
                 className={`flex items-center gap-4 p-4 transition-all border ${
@@ -96,7 +90,7 @@ export default function Contact({ isDarkMode }: { isDarkMode: boolean }) {
                 <Github className={`w-4 h-4 transition-colors ${
                   isDarkMode ? 'text-[#4a6d8c] group-hover:text-[#00d4ff]' : 'text-slate-400 group-hover:text-blue-700'
                 }`} />
-                <span>github.com/sai-soum-mein</span>
+                <span>github.com/ssmein</span>
               </a>
 
               <div className={`flex items-center gap-4 p-4 select-none border ${
