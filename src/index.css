@@ -69,15 +69,6 @@ body::before {
   }
 }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
 .animate-spin-slow {
   animation: spin-slow 15s linear infinite;
 }

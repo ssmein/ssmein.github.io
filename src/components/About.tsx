@@ -81,10 +81,10 @@ export default function About({ isDarkMode }: { isDarkMode: boolean }) {
             isDarkMode ? 'text-[#4a6d8c]' : 'text-slate-650'
           }`}>
             <p>
-              I am a <strong className={`font-semibold ${isDarkMode ? 'text-[#cde8ff]' : 'text-slate-950'}`}>Civil Engineer</strong> with experience in construction and data analytics. I see modern buildings not merely as physical assemblies of concrete and steel, but as living, breathing spatial metadata systems. My practice centers on computational workflows that make complex coordinates and construction specifications accessible, auditable, and automated.
+              I am a <strong className={`font-semibold ${isDarkMode ? 'text-[#cde8ff]' : 'text-slate-950'}`}>Civil Engineer</strong> with experience in construction and data analytics.I see modern buildings not merely as physical assemblies of concrete and steel, but as living, breathing spatial metadata systems. My practice centers on computational workflows that make complex coordinates and construction specifications accessible, auditable, and automated.
             </p>
             <p>
-              By combining construction fundamentals with programming (<strong className={`font-semibold ${isDarkMode ? 'text-[#cde8ff]' : 'text-slate-950'}`}>Python, SQL, and data analytics tools</strong>), I transform raw project data into structured reports, decision-support pipelines, and efficient workflows that help teams deliver smarter outcomes.
+              By combining construction fundamentals with programming (<strong className={`font-semibold ${isDarkMode ? 'text-[#cde8ff]' : 'text-slate-950'}`}>Python, SQL, and data analytics tools</strong>), I can transform data into structured reports and decision support pipelines and support on delivering smarter, more efficient project outcomes. 
             </p>
           </div>
         </div>
