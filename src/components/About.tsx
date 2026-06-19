@@ -91,29 +91,42 @@ export default function About({ isDarkMode }: { isDarkMode: boolean }) {
 
         {/* Right column: Interactive Stats Cards */}
         <div className="lg:col-span-5 grid grid-cols-2 gap-4">
-          {statsData.map((stat, idx) => (
-            <motion.div
-              key={stat.id}
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: idx * 0.1 }}
-              className={`p-6 flex flex-col justify-center items-center text-center rounded-sm transition-all group border ${
-                isDarkMode 
-                  ? 'bg-[#041325]/40 border-[#00d4ff]/10 hover:border-[#00d4ff]/30' 
-                  : 'bg-white shadow-xs border-slate-200 hover:border-slate-400'
-              }`}
-            >
-              <AnimatedCounter target={stat.count} suffix={stat.suffix} isDarkMode={isDarkMode} />
-              <div className={`font-mono text-[9px] sm:text-[10px] tracking-widest uppercase mt-1 transition-colors ${
-                isDarkMode 
-                  ? 'text-[#4a6d8c] group-hover:text-[#00d4ff]' 
-                  : 'text-slate-500 group-hover:text-blue-600'
-              }`}>
-                {stat.label}
-              </div>
-            </motion.div>
-          ))}
+          {statsData.map((stat, idx) => {
+            const isCerts = stat.id === 'certs';
+            return (
+              <motion.div
+                key={stat.id}
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: idx * 0.1 }}
+                onClick={() => {
+                  if (isCerts) {
+                    const el = document.getElementById('education');
+                    if (el) {
+                      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                  }
+                }}
+                className={`p-6 flex flex-col justify-center items-center text-center rounded-sm transition-all group border ${
+                  isCerts ? 'cursor-pointer hover:scale-[1.02]' : ''
+                } ${
+                  isDarkMode 
+                    ? 'bg-[#041325]/40 border-[#00d4ff]/10 hover:border-[#00d4ff]/30' 
+                    : 'bg-white shadow-xs border-slate-200 hover:border-slate-400'
+                }`}
+              >
+                <AnimatedCounter target={stat.count} suffix={stat.suffix} isDarkMode={isDarkMode} />
+                <div className={`font-mono text-[9px] sm:text-[10px] tracking-widest uppercase mt-1 transition-colors ${
+                  isDarkMode 
+                    ? 'text-[#4a6d8c] group-hover:text-[#00d4ff]' 
+                    : 'text-slate-500 group-hover:text-blue-600'
+                }`}>
+                  {stat.label}
+                </div>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
     </section>

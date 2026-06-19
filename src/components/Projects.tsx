@@ -51,10 +51,14 @@ export default function Projects({ isDarkMode, onSelectProject }: ProjectsProps)
                   selectedCategory === cat
                     ? isDarkMode 
                       ? 'border-[#00d4ff] text-[#00d4ff] bg-[#00d4ff]/5'
-                      : 'border-blue-600 text-blue-700 bg-blue-50 font-medium'
+                      : cat === 'Data Analytics'
+                        ? 'border-[#155DFC] text-[#155DFC] bg-[#155DFC]/5 font-semibold'
+                        : 'border-blue-600 text-blue-700 bg-blue-50 font-medium'
                     : isDarkMode 
                       ? 'border-[#4a6d8c]/30 text-[#4a6d8c] hover:border-[#cde8ff]/30 hover:text-[#cde8ff]'
-                      : 'border-slate-300 text-slate-500 hover:border-slate-400 hover:bg-slate-50'
+                      : cat === 'Data Analytics'
+                        ? 'border-slate-300 text-[#155DFC]/85 hover:text-[#155DFC] hover:border-[#155DFC]/50'
+                        : 'border-slate-300 text-slate-500 hover:border-slate-400 hover:bg-slate-50'
                 }`}
               >
                 {cat}
@@ -92,7 +96,11 @@ export default function Projects({ isDarkMode, onSelectProject }: ProjectsProps)
                 <div>
                   <div className="flex justify-between items-start mb-4">
                     <span className={`font-mono text-[9px] tracking-[3px] uppercase ${
-                      isDarkMode ? 'text-[#00d4ff]' : 'text-blue-600 font-bold bg-blue-50 px-1.5 py-0.5 rounded-sm'
+                      isDarkMode 
+                        ? 'text-[#00d4ff]' 
+                        : project.type === 'Data Analytics'
+                          ? 'text-[#155DFC] font-bold bg-[#155DFC]/5 px-1.5 py-0.5 rounded-sm border border-[#155DFC]/20'
+                          : 'text-blue-600 font-bold bg-blue-50 px-1.5 py-0.5 rounded-sm'
                     }`}>
                       {project.type}
                     </span>
@@ -102,7 +110,11 @@ export default function Projects({ isDarkMode, onSelectProject }: ProjectsProps)
                   </div>
 
                   <h3 className={`font-sans text-lg sm:text-xl font-semibold transition-colors mb-2 ${
-                    isDarkMode ? 'text-white group-hover:text-[#00d4ff]' : 'text-slate-900 group-hover:text-blue-800'
+                    isDarkMode 
+                      ? 'text-white group-hover:text-[#00d4ff]' 
+                      : (project.id === 'kpi-dash' || project.title.includes('Construction KPI'))
+                        ? 'text-black group-hover:text-[#155DFC]'
+                        : 'text-black group-hover:text-blue-800'
                   }`}>
                     {project.title}
                   </h3>

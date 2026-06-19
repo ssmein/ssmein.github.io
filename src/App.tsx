@@ -21,7 +21,7 @@ export default function App() {
   useEffect(() => {
     if (selectedProject) return; // Don't observe section intersections while on a subpage
 
-    const sections = ['home', 'about', 'skills', 'projects', 'experience', 'contact'];
+    const sections = ['home', 'about', 'skills', 'projects', 'experience', 'education', 'contact'];
     
     // Create an intersection observer to track which portion is active
     const observerOptions = {

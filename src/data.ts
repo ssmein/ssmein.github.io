@@ -1,11 +1,11 @@
-import { Project, Experience, SkillGroup, Stat } from './types';
+import { Project, Experience, SkillGroup, Stat, Degree, Certificate, SpecialCourse } from './types';
 import revitModel1 from './assets/images/revit_model_1_1780650947113.png';
 import revitModel2 from './assets/images/revit_model_2_1780650963970.png';
 
 export const statsData: Stat[] = [
   { id: 'years', count: 4, suffix: 'Y+', label: 'Years Experience (Construction + Data)' },
   { id: 'projects', count: 5, suffix: '+', label: 'Dashboard Delivered' },
-  { id: 'certs', count: 5, suffix: ' Certs', label: 'Professional Certifications' },
+  { id: 'certs', count: 4, suffix: ' Certs', label: 'Professional Certifications' },
   { id: 'scripts', count: 12, suffix: ' Scripts', label: 'BIM Automation Scripts' }
 ];
 
@@ -230,3 +230,120 @@ export const experienceData: Experience[] = [
     skillsUsed: ['Site Operations', 'Technical Compliance', 'Progress Tracking', 'Subcontractor Coordination', 'Site Logistics']
   }
 ];
+
+export const educationData: Degree[] = [
+  {
+    id: 'msc',
+    degree: 'Master of Engineering in Construction, Engineering and Infrastructure Management',
+    institution: 'Asian Institute of Technology',
+    period: '2017 — 2019',
+    location: 'Pathum Thani, Thailand',
+    details: [
+      'Thesis Title: "Characteristics of organizational culture in contractor companies affecting project performance and management styles."',
+      'Thesis Link: https://aitir.ait.ac.th/ait-thesis/detail.php?q=B07730'
+    ]
+  },
+  {
+    id: 'be',
+    degree: 'Bachelor of Engineering in Civil and Infrastructure Engineering',
+    institution: 'Asian Institute of Technology',
+    period: '2012 — 2016',
+    location: 'Pathum Thani, Thailand',
+    details: [
+      'Capstone Project: Engineering Behavior of Artificial Municipal Solid Waste'
+    ]
+  }
+];
+
+export const certificationData: Certificate[] = [
+  {
+    id: 'cert-1',
+    title: 'Google Advanced Data Analytics Professional',
+    issuer: 'Google',
+    year: '2024',
+    details: 'Covers advanced statistical modeling, Python data structures, regression modeling, and machine learning models.'
+  },
+  {
+    id: 'cert-2',
+    title: 'Autodesk Certified Professional: Revit for Structural Design',
+    issuer: 'Autodesk',
+    year: '2023',
+    details: 'Validates industry-grade expertise in complex structural framing, parameter mapping, and Dynamo scripting workflows.'
+  },
+  {
+    id: 'cert-3',
+    title: 'Microsoft Certified: Power BI Data Analyst Associate (PL-300)',
+    issuer: 'Microsoft',
+    year: '2024',
+    details: 'Demonstrates professional proficiency in transforming datasets, creating DAX models, and deploying automated corporate BI dashboards.'
+  },
+  {
+    id: 'cert-4',
+    title: 'Project Management Professional & Primavera P6 Specialist',
+    issuer: 'Project Management Institute / Oracle Partner',
+    year: '2022',
+    details: 'Specialized training in Critical Path Method (CPM) analyses, schedule compression, and resource constraint allocation modeling.'
+  },
+  {
+    id: 'cert-5',
+    title: 'Professional Civil Engineer (Registered Assistant Engineer)',
+    issuer: 'Myanmar Engineering Council',
+    year: '2021',
+    details: 'Licensed engineer credential verifying competency in engineering ethics, building code specifications, and construction site inspection.'
+  }
+];
+
+export const specialCourseData: SpecialCourse[] = [
+  {
+    id: 'coursera-ds',
+    title: 'IBM Data Science',
+    issuer: 'IBM (via Coursera)',
+    year: '2023',
+    link: 'https://coursera.org/share/85ed086c21c80ad95b247a28b7668d4a',
+    syllabus: [
+      'Data Science Tools, Methodology, and Python Project Execution',
+      'Data Analysis with Pandas, NumPy, and Scientific Computing Libraries',
+      'Data Visualization with Matplotlib, Seaborn, and Interactive Folium Maps',
+      'Applied Machine Learning Algorithms and Model Evaluation Metrics'
+    ]
+  },
+  {
+    id: 'coursera-ml',
+    title: 'Machine Learning Specialization',
+    issuer: 'DeepLearning.AI & Stanford',
+    year: '2025',
+    link: 'https://coursera.org/share/b7ad5678531653af1a10bf8538f199f4',
+    syllabus: [
+      'Supervised Machine Learning: Linear Regression and Classification Models',
+      'Advanced Learning Algorithms: Multi-class Neural Networks and Decision Trees',
+      'Unsupervised Learning: K-means Clustering, Anomaly Detection, and Recommender Systems'
+    ]
+  },
+  {
+    id: 'revit-bim',
+    title: 'Revit Architecture BIM Modelling Essentials',
+    issuer: 'Autodesk Authorized Training Program',
+    year: '2026',
+    isPdf: true,
+    link: '/certificates/revit_certificate.pdf',
+    syllabus: [
+      'Parametric 3D structural, wall, structural schedules, and family design modules',
+      'Creation, modification, and organization of complex Autodesk building elements',
+      'Generation of automatic quantity takeoff lists, schedules, and structural layout sheets'
+    ]
+  },
+  {
+    id: 'dynamo-bim',
+    title: 'Automation BIM Essential (Dynamo)',
+    issuer: 'Autodesk Authorized Training Program',
+    year: '2026',
+    isPdf: true,
+    link: '/certificates/dynamo_certificate.pdf',
+    syllabus: [
+      'Visual programming paradigms: wire routing, custom nodes, and code block lists',
+      'Automated parameter processing, mass file attribute editing, and Excel connectors',
+      'Structural element automation, adaptive component arrays, and modeling scripts'
+    ]
+  }
+];
+

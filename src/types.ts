@@ -40,3 +40,31 @@ export interface Stat {
   suffix: string;
   label: string;
 }
+
+export interface Degree {
+  id: string;
+  degree: string;
+  institution: string;
+  period: string;
+  location: string;
+  details: string[];
+}
+
+export interface Certificate {
+  id: string;
+  title: string;
+  issuer: string;
+  year: string;
+  details: string;
+}
+
+export interface SpecialCourse {
+  id: string;
+  title: string;
+  issuer: string;
+  year: string;
+  link?: string;
+  isPdf?: boolean;
+  syllabus?: string[];
+}
+
