@@ -62,7 +62,7 @@ export default function Contact({ isDarkMode }: { isDarkMode: boolean }) {
               </a>
 
               <a
-                href="https://linkedin.com/in/saisoummein/"
+                href="https://www.linkedin.com/in/sai-soum-mein/"
                 target="_blank"
                 rel="noreferrer"
                 className={`flex items-center gap-4 p-4 transition-all border ${
@@ -74,7 +74,7 @@ export default function Contact({ isDarkMode }: { isDarkMode: boolean }) {
                 <Linkedin className={`w-4 h-4 transition-colors ${
                   isDarkMode ? 'text-[#4a6d8c] group-hover:text-[#00d4ff]' : 'text-slate-400 group-hover:text-blue-700'
                 }`} />
-                <span>linkedin.com/in/saisoummein/</span>
+                <span>linkedin.com/in/sai-soum-mein</span>
               </a>
 
               <a

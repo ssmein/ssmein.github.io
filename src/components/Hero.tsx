@@ -121,11 +121,11 @@ export default function Hero({ isDarkMode }: { isDarkMode: boolean }) {
             transition={{ duration: 0.9, delay: 0.4 }}
             className="flex flex-col items-start w-full"
           >
-            <div 
-              className="flex items-baseline flex-nowrap gap-x-2 sm:gap-x-4 md:gap-x-6 lg:gap-x-8 select-none w-full" 
+            <div
+              className="flex items-baseline flex-nowrap gap-x-2 sm:gap-x-4 md:gap-x-6 lg:gap-x-8 select-none w-full"
               style={{ fontSize: 'clamp(2.2rem, 13vw, 11rem)' }}
             >
-              {/* BIM without vertical ENGINEER alignments */}
+
               <div className="relative inline-block leading-none">
                 <span className={`font-sans font-black tracking-[-0.03em] leading-none ${
                   isDarkMode ? 'text-white' : 'text-black'
@@ -134,32 +134,33 @@ export default function Hero({ isDarkMode }: { isDarkMode: boolean }) {
                 </span>
               </div>
 
-              {/* Portfolio Word with custom glowing dot on 'i' without overlapping with l */}
               <span className={`font-sans font-medium tracking-[-0.02em] leading-none ${
                 isDarkMode ? 'text-slate-400' : 'text-[#bfc4cd]'
               } flex items-baseline`}>
                 Portfol
                 <span className="relative inline-flex items-baseline mx-[0.03em]">
                   ı
-                  <span 
+                  <span
                     className="absolute rounded-full bg-gradient-to-br from-[#00d4ff] to-[#005af0]"
-                    style={{ 
-                      width: '0.14em', 
+                    style={{
+                      width: '0.14em',
                       height: '0.14em',
                       top: '0.08em',
                       left: '50%',
                       transform: 'translateX(-50%)',
                       boxShadow: '0 0 12px 3px rgba(0, 212, 255, 0.9), 0 0 24px 6px rgba(0, 90, 240, 0.6)'
-                    }} 
+                    }}
                   >
-                    {/* Glowing outer representation container */}
-                    <span className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ transform: 'translate(-50%, -50%)', left: '50%', top: '50%' }}>
-                      {/* Pulsing expand ring */}
-                      <span className="absolute w-[400%] h-[400%] rounded-full border border-[#00d4ff]/50 animate-ping opacity-60" style={{ animationDuration: '2s' }} />
-                      
-                      {/* Sunburst glowing rays slowly rotating */}
-                      <svg 
-                        className="absolute w-[500%] h-[500%] animate-[spin_10s_linear_infinite]" 
+                    <span
+                      className="absolute inset-0 flex items-center justify-center pointer-events-none"
+                      style={{ transform: 'translate(-50%, -50%)', left: '50%', top: '50%' }}
+                    >
+                      <span
+                        className="absolute w-[400%] h-[400%] rounded-full border border-[#00d4ff]/50 animate-ping opacity-60"
+                        style={{ animationDuration: '2s' }}
+                      />
+                      <svg
+                        className="absolute w-[500%] h-[500%] animate-[spin_10s_linear_infinite]"
                         viewBox="0 0 100 100"
                         style={{ overflow: 'visible' }}
                       >
@@ -170,7 +171,6 @@ export default function Hero({ isDarkMode }: { isDarkMode: boolean }) {
                             <stop offset="100%" stopColor="rgba(0, 90, 240, 0)" />
                           </radialGradient>
                         </defs>
-                        {/* 8 beautiful rays radiating outward representing the shining sun */}
                         {[...Array(8)].map((_, idx) => {
                           const angle = (idx * 360) / 8;
                           const x2 = 50 + 35 * Math.cos((angle * Math.PI) / 180);
