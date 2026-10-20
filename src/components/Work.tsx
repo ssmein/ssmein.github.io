@@ -1,4 +1,5 @@
 import { projects } from '../content';
+import RagDiagram from './RagDiagram';
 import Section from './Section';
 
 export default function Work() {
@@ -6,14 +7,22 @@ export default function Work() {
     <Section
       id="work"
       title="Work"
-      lede="Four pieces of work, from modelling through to the databases and dashboards built on top of it."
+      lede="Most of this is client work I cannot show, so it is written as the problem, the constraint and the decision rather than a gallery. The reasoning is the part worth reading anyway."
     >
       <div className="divide-y divide-rule">
         {projects.map((project, index) => (
-          <article key={project.id} className={index === 0 ? 'pb-12' : 'py-12 last:pb-0'}>
-            <p className="font-display text-xs font-medium text-data">{project.discipline}</p>
+          <article key={project.id} className={index === 0 ? 'pb-14' : 'py-14 last:pb-0'}>
+            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+              <p className="font-display text-xs font-medium text-data">{project.discipline}</p>
+              <p className="font-body text-xs text-slate">{project.client}</p>
+              {project.confidential ? (
+                <p className="border border-rule px-1.5 py-0.5 font-body text-[11px] leading-none text-slate">
+                  Under NDA
+                </p>
+              ) : null}
+            </div>
 
-            <h3 className="mt-2 max-w-[28ch] font-display text-[clamp(1.5rem,3.6vw,2.125rem)] font-semibold leading-tight tracking-[-0.02em] text-ink">
+            <h3 className="mt-2.5 max-w-[26ch] font-display text-[clamp(1.5rem,3.6vw,2.125rem)] font-semibold leading-tight tracking-[-0.02em] text-ink">
               {project.title}
             </h3>
 
@@ -21,12 +30,22 @@ export default function Work() {
               {project.summary}
             </p>
 
-            <p className="mt-4 max-w-[68ch] font-body leading-relaxed text-slate">
-              {project.detail}
+            {/* The problem gets its own weight: it is what makes the rest legible. */}
+            <p className="mt-6 max-w-[64ch] border-l-2 border-rule pl-4 font-body leading-relaxed text-slate">
+              {project.problem}
             </p>
 
-            {/* Figures: tabular, aligned down a column, no cards. */}
-            <dl className="mt-7 border-t border-rule">
+            {project.diagram === 'rag' ? <RagDiagram /> : null}
+
+            <div className="mt-6 space-y-4">
+              {project.detail.map((paragraph) => (
+                <p key={paragraph} className="max-w-[68ch] font-body leading-relaxed text-slate">
+                  {paragraph}
+                </p>
+              ))}
+            </div>
+
+            <dl className="mt-8 border-t border-rule">
               {project.figures.map((figure) => (
                 <div
                   key={figure.label}
@@ -43,23 +62,6 @@ export default function Work() {
             </p>
 
             <p className="mt-6 font-body text-sm text-slate">{project.stack.join(', ')}</p>
-
-            {project.images?.length ? (
-              <div className="mt-8 grid gap-3 sm:grid-cols-2">
-                {project.images.map((src, imageIndex) => (
-                  <img
-                    key={src}
-                    src={src}
-                    alt={`${project.title}, model view ${imageIndex + 1}`}
-                    width={1400}
-                    height={764}
-                    loading="lazy"
-                    decoding="async"
-                    className="h-auto w-full border border-rule bg-paper-sunk"
-                  />
-                ))}
-              </div>
-            ) : null}
           </article>
         ))}
       </div>

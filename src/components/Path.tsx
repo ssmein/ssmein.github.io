@@ -6,7 +6,7 @@ export default function Path() {
     <Section
       id="path"
       title="Path"
-      lede="Site engineering first, then analytics. The order matters: the questions I ask of data come from having had to answer them on site."
+      lede="Engineering first, then data. The order matters more than it looks: the questions I ask of a dataset come from having had to answer them on a site, to someone who needed the answer that morning."
     >
       {/* The station line everything hangs off. */}
       <ol className="relative border-l border-rule pl-6 sm:pl-8">

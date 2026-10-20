@@ -1,4 +1,4 @@
-import { profile } from '../content';
+import { headline, profile } from '../content';
 import CareerPlot from './CareerPlot';
 
 export default function Hero() {
@@ -8,8 +8,12 @@ export default function Hero() {
         {profile.name}
       </h1>
 
-      <p className="mt-5 max-w-[46ch] text-balance font-body text-xl leading-snug text-ink sm:text-2xl">
-        {profile.role}, based in {profile.location}.
+      <p className="mt-5 max-w-[34ch] font-display text-xl font-semibold tracking-[-0.015em] text-ink sm:text-2xl">
+        {profile.role} in {profile.location}.
+      </p>
+
+      <p className="mt-3 max-w-[56ch] text-balance font-body text-lg leading-relaxed text-slate sm:text-xl">
+        {headline}
       </p>
 
       <CareerPlot />

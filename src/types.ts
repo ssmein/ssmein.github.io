@@ -5,20 +5,32 @@ export interface Span {
   label: string;
   detail: string;
   track: Track;
+  /** Written out, because rounding the decimals below misreports the dates. */
+  period: string;
   /** Decimal years, e.g. Nov 2020 is 2020.83. */
   start: number;
   end: number;
 }
 
+export type Discipline = 'AI systems' | 'Internal tools' | 'Analytics';
+
 export interface Project {
   id: string;
   title: string;
-  discipline: 'Modelling' | 'Automation' | 'Analytics' | 'Database';
+  discipline: Discipline;
+  /** Named only as far as confidentiality allows. */
+  client: string;
+  /** One line on why the work existed. */
+  problem: string;
   summary: string;
-  detail: string;
+  /** The decisions worth reading, one paragraph each. */
+  detail: string[];
   outcome: string;
   stack: string[];
   figures: { label: string; value: string }[];
+  /** True when the work is under NDA, so the page can say so plainly. */
+  confidential?: boolean;
+  diagram?: 'rag';
   images?: string[];
 }
 

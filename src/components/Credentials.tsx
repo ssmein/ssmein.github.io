@@ -60,7 +60,7 @@ export default function Credentials() {
 
       {/* Courses */}
       <h3 className="mt-14 font-display text-base font-semibold tracking-tight text-ink">
-        Courses
+        Training
       </h3>
       <div className="mt-4 border-t border-rule">
         {courses.map((course) => (

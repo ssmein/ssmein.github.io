@@ -2,7 +2,7 @@ import { spans } from '../content';
 import type { Track } from '../types';
 
 const DOMAIN_START = 2012;
-const DOMAIN_END = 2026.5;
+const DOMAIN_END = 2026.9;
 /** Narrow screens show only the sparse ticks; the rest appear from `sm` up. */
 const YEAR_TICKS: { year: number; dense?: boolean }[] = [
   { year: 2012 },
@@ -46,7 +46,7 @@ export default function CareerPlot() {
                 {laneSpans.map((span, spanIndex) => (
                   <div
                     key={span.id}
-                    title={`${span.label}, ${span.detail}`}
+                    title={`${span.detail}, ${span.period}`}
                     className={`draw-track absolute top-1/2 h-2.5 min-w-[7px] -translate-y-1/2 rounded-[1px] ${lane.bar}`}
                     style={{
                       left: `${pct(span.start)}%`,
@@ -85,15 +85,16 @@ export default function CareerPlot() {
       </div>
 
       <figcaption className="mt-4 max-w-[62ch] font-body text-sm leading-relaxed text-slate">
-        Fourteen years, three kinds of work. Two engineering degrees, four years of
-        it on site in Yangon and Iwakuni, then analytics in Bangkok.
+        Two engineering degrees, a few years of it on site in Yangon and Iwakuni,
+        then analytics and data science in Bangkok — which is where the work has
+        been since 2024.
       </figcaption>
 
       {/* The same information, for screen readers and anyone the chart fails. */}
       <ul className="sr-only">
         {spans.map((span) => (
           <li key={span.id}>
-            {span.label}, {span.detail}, {Math.floor(span.start)} to {Math.ceil(span.end)}.
+            {span.label}, {span.detail}, {span.period}.
           </li>
         ))}
       </ul>
