@@ -1,44 +1,44 @@
+export type Track = 'education' | 'site' | 'data';
+
+export interface Span {
+  id: string;
+  label: string;
+  detail: string;
+  track: Track;
+  /** Decimal years, e.g. Nov 2020 is 2020.83. */
+  start: number;
+  end: number;
+}
+
 export interface Project {
   id: string;
   title: string;
-  category: 'Modelling' | 'Automation' | 'Data Analytics' | 'Database' | 'All';
-  type: string;
-  description: string;
-  longDescription: string;
-  tags: string[];
-  metrics: { label: string; value: string }[];
-  impact: string;
+  discipline: 'Modelling' | 'Automation' | 'Analytics' | 'Database';
+  summary: string;
+  detail: string;
+  outcome: string;
+  stack: string[];
+  figures: { label: string; value: string }[];
   images?: string[];
-  technicalSpecs?: { label: string; value: string }[];
-  diagrams?: { title: string; url: string; caption: string }[];
 }
 
-export interface Experience {
+export interface Role {
   id: string;
   period: string;
   role: string;
   company: string;
   location: string;
-  description: string[];
-  skillsUsed: string[];
-  type?: string;
+  track: Track;
+  work: string[];
+  tools: string[];
 }
 
-export interface Skill {
-  name: string;
-  level: number;
-}
+export type Tier = 'Core' | 'Working' | 'Exposure';
 
 export interface SkillGroup {
   category: string;
-  skills: Skill[];
-}
-
-export interface Stat {
-  id: string;
-  count: number;
-  suffix: string;
-  label: string;
+  note: string;
+  skills: { name: string; tier: Tier }[];
 }
 
 export interface Degree {
@@ -47,24 +47,15 @@ export interface Degree {
   institution: string;
   period: string;
   location: string;
-  details: string[];
+  notes: { text: string; href?: string }[];
 }
 
-export interface Certificate {
+export interface Credential {
   id: string;
   title: string;
   issuer: string;
   year: string;
-  details: string;
-}
-
-export interface SpecialCourse {
-  id: string;
-  title: string;
-  issuer: string;
-  year: string;
-  link?: string;
-  isPdf?: boolean;
+  detail: string;
+  href?: string;
   syllabus?: string[];
 }
-
