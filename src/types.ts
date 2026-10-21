@@ -1,17 +1,5 @@
 export type Track = 'education' | 'site' | 'data';
 
-export interface Span {
-  id: string;
-  label: string;
-  detail: string;
-  track: Track;
-  /** Written out, because rounding the decimals below misreports the dates. */
-  period: string;
-  /** Decimal years, e.g. Nov 2020 is 2020.83. */
-  start: number;
-  end: number;
-}
-
 export type Discipline = 'AI systems' | 'Internal tools' | 'Analytics';
 
 export interface Project {

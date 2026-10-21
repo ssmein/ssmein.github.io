@@ -50,27 +50,9 @@ body {
   color: var(--color-ink);
 }
 
-/* The single orchestrated moment: the career plot draws itself once. */
-@keyframes draw-track {
-  from {
-    transform: scaleX(0);
-  }
-  to {
-    transform: scaleX(1);
-  }
-}
-
-.draw-track {
-  transform-origin: left center;
-  animation: draw-track 760ms cubic-bezier(0.22, 1, 0.36, 1) both;
-}
-
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
-  }
-  .draw-track {
-    animation: none;
   }
   *,
   *::before,

@@ -1,4 +1,4 @@
-import type { Credential, Degree, Project, Role, SkillGroup, Span } from './types';
+import type { Credential, Degree, Project, Role, SkillGroup } from './types';
 
 export const profile = {
   name: 'Sai Soum Mein',
@@ -12,82 +12,12 @@ export const profile = {
 
 /** The one claim the site makes. Everything below is evidence for it. */
 export const headline =
-  'I build the analysis and the product around it — retrieval systems, internal tools and the reporting that keeps them honest.';
+  'I build the analysis and the product that carries it — retrieval systems, internal tools, and the reporting people actually make decisions from.';
 
 export const intro = [
-  'I am a data scientist in Bangkok. Most of my work ends up as something people actually open: a retrieval assistant that answers enquiries, a tracker a production team runs its week from, a model whose output changes where a budget goes.',
-  'That range is deliberate. An analysis that stops at a notebook rarely changes anything, so I have learned the parts either side of it — getting the data into shape, and building the interface that puts the result in front of whoever needs to act on it.',
-  'Before this I trained as a civil engineer and worked on sites in Yangon and Iwakuni. It is where I learned that most things go wrong because a record disagreed with reality, which turns out to be the same problem I work on now.',
-];
-
-/**
- * The career plot. Decimal years, so November 2020 is 2020.83.
- * TODO(sai): confirm the start date of the current role.
- */
-export const spans: Span[] = [
-  {
-    id: 'be',
-    label: 'BEng Civil',
-    detail: 'Asian Institute of Technology',
-    track: 'education',
-    period: '2012 — 2016',
-    start: 2012,
-    end: 2016,
-  },
-  {
-    id: 'me',
-    label: 'MEng Construction Management',
-    detail: 'Asian Institute of Technology',
-    track: 'education',
-    period: '2017 — 2019',
-    start: 2017,
-    end: 2019,
-  },
-  {
-    id: 'shwetaung',
-    label: 'Shwe Taung',
-    detail: 'Civil engineer, Yangon',
-    track: 'site',
-    period: 'Nov 2020 — Mar 2021',
-    start: 2020.83,
-    end: 2021.17,
-  },
-  {
-    id: 'seikitokyu',
-    label: 'Seikitokyu Kogyo',
-    detail: 'Civil engineer, Iwakuni',
-    track: 'site',
-    period: 'Nov 2022 — Mar 2023',
-    start: 2022.83,
-    end: 2023.17,
-  },
-  {
-    id: 'marketingape',
-    label: 'marketingApe',
-    detail: 'Data analyst, Bangkok',
-    track: 'data',
-    period: 'Mar 2024 — Nov 2024',
-    start: 2024.17,
-    end: 2024.83,
-  },
-  {
-    id: 'shine',
-    label: 'Shine',
-    detail: 'Data analyst, Bangkok',
-    track: 'data',
-    period: 'Dec 2024 — May 2026',
-    start: 2024.92,
-    end: 2026.33,
-  },
-  {
-    id: 'university',
-    label: 'University',
-    detail: 'Data scientist, Bangkok',
-    track: 'data',
-    period: '2026 — present',
-    start: 2026.4,
-    end: 2026.9,
-  },
+  'I am a data scientist in Bangkok. Most of what I build ends up as something people actually open — a retrieval assistant that answers enquiries, a tracker a production team runs its week from, a model whose output decides where a budget goes.',
+  'The range is deliberate. An analysis that stops at a notebook rarely changes anything, so I work the parts either side of it: getting the data into a state worth trusting, and building the thing that puts the result in front of whoever has to act on it.',
+  'I came to this from civil engineering, by way of construction sites in Yangon and Iwakuni. That is where I learned the problem I still work on — most things go wrong because a record disagreed with reality.',
 ];
 
 const UNIVERSITY = 'A school within a private university, Bangkok';

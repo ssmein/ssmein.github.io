@@ -11,7 +11,11 @@ export default function Work() {
     >
       <div className="divide-y divide-rule">
         {projects.map((project, index) => (
-          <article key={project.id} className={index === 0 ? 'pb-14' : 'py-14 last:pb-0'}>
+          <article
+            key={project.id}
+            id={project.id}
+            className={`scroll-mt-24 ${index === 0 ? 'pb-14' : 'py-14 last:pb-0'}`}
+          >
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
               <p className="font-display text-xs font-medium text-data">{project.discipline}</p>
               <p className="font-body text-xs text-slate">{project.client}</p>
