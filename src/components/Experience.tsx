@@ -107,10 +107,12 @@ export default function Experience({ isDarkMode }: { isDarkMode: boolean }) {
     return 0;
   });
 
+  // behavior:'smooth' in the options object overrides the reduced-motion rule
+  // in index.css, so the preference has to be applied here as well.
   const scrollToEducation = () => {
     const el = document.getElementById('education');
     if (el) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      el.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'start' });
     }
   };
 
@@ -294,7 +296,11 @@ export default function Experience({ isDarkMode }: { isDarkMode: boolean }) {
             {/* Jump back up indicator/link */}
             <div className="self-start md:self-end">
               <button
-                onClick={() => document.getElementById('experience')?.scrollIntoView({ behavior: 'smooth' })}
+                onClick={() =>
+                  document
+                    .getElementById('experience')
+                    ?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' })
+                }
                 className={`text-xs font-mono hover:underline focus:outline-none flex items-center gap-1.5 uppercase cursor-pointer transition-ui active:scale-[0.98] motion-reduce:active:scale-100 ${
                   isDarkMode ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-slate-950'
                 }`}
@@ -460,7 +466,7 @@ export default function Experience({ isDarkMode }: { isDarkMode: boolean }) {
                                 Certification
                               </span>
                             </div>
-                            <h4 className={`font-sans text-base sm:text-lg font-bold mt-2 leading-snug transition-colors group-hover:transition-none ${
+                            <h4 className={`font-sans text-base sm:text-lg font-bold mt-2 leading-snug transition-ui motion-reduce:transition-none ${
                               isDarkMode ? 'text-white group-hover:text-[#39ff14]' : 'text-slate-900 group-hover:text-green-700'
                             }`}>
                               {item.title}

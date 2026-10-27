@@ -23,6 +23,9 @@ export default function Navbar({ activeSection, isDarkMode, toggleTheme, isDetai
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // The drawer traps nothing — focus stays free and the page underneath keeps
+  // scrolling — so Escape is the keyboard way out, alongside the toggle and any
+  // link. The listener only exists while the drawer is open.
   useEffect(() => {
     if (!isMobileMenuOpen) return;
     const onKey = (e: KeyboardEvent) => {
@@ -62,9 +65,16 @@ export default function Navbar({ activeSection, isDarkMode, toggleTheme, isDetai
 
   return (
     <>
+      {/*
+        The scrolled/unscrolled change is driven by scroll position, not by a
+        click, so it can afford the slower 260ms — it reads as the surface
+        settling rather than as a laggy response. Only paint properties are
+        transitioned; the py change is deliberately left to snap, because
+        animating padding would force layout on every frame.
+      */}
       <nav
         id="navbar"
-        className={`fixed top-0 left-0 w-full z-50 transition-ui border-b border-opacity-10 ${
+        className={`fixed top-0 left-0 w-full z-50 border-b border-opacity-10 transition-[background-color,border-color,box-shadow] duration-[260ms] ease-[cubic-bezier(0.4,0,0.2,1)] motion-reduce:transition-none ${
           isScrolled
             ? isDarkMode
               ? 'bg-[#000000]/90 backdrop-blur-md py-3 border-[#00d4ff]'
@@ -77,7 +87,7 @@ export default function Navbar({ activeSection, isDarkMode, toggleTheme, isDetai
           <a
             href="#home"
             onClick={(e) => handleLinkClick(e, '#home')}
-            className={`flex items-center gap-2 font-display text-xl sm:text-2xl tracking-[3px] transition-ui hover:brightness-125 focus:outline-none ${
+            className={`flex items-center gap-2 font-display text-xl sm:text-2xl tracking-[3px] transition-ui hover:brightness-125 active:scale-[0.98] motion-reduce:active:scale-100 focus:outline-none ${
               isDarkMode ? 'text-[#00d4ff]' : 'text-slate-900 font-bold'
             }`}
             style={isDarkMode ? { textShadow: '0 0 15px rgba(0, 212, 255, 0.4)' } : undefined}
@@ -96,24 +106,45 @@ export default function Navbar({ activeSection, isDarkMode, toggleTheme, isDetai
                 const isActive = activeSection === link.href.slice(1);
                 return (
                   <li key={link.href} className="relative">
+                    {/*
+                      The highest-frequency control here: colour settles in
+                      160ms and the press is a flat 2% scale. No blur, no
+                      bounce, and no entrance animation — the link is already
+                      on screen; motion here is purely feedback.
+                    */}
                     <a
                       href={link.href}
                       onClick={(e) => handleLinkClick(e, link.href)}
-                      className={`uppercase transition-colors duration-200 py-1 focus:outline-none ${
-                        isActive 
+                      className={`inline-block uppercase py-1 transition-[color,transform] duration-[160ms] ease-[cubic-bezier(0.4,0,0.2,1)] active:scale-[0.98] motion-reduce:transition-none motion-reduce:active:scale-100 focus:outline-none ${
+                        isActive
                           ? isDarkMode ? 'text-[#00d4ff]' : 'text-slate-950 font-semibold'
                           : isDarkMode ? 'hover:text-[#00d4ff]' : 'hover:text-blue-600'
                       }`}
                     >
                       {link.label}
                       {isActive && (
+                        /*
+                          The indicator travels between links instead of
+                          snapping — that travel is what tells you which way
+                          you moved through the page. Stiff and overdamped so
+                          it arrives quickly and lands dead flat; a springy
+                          underline would wobble at every section boundary you
+                          scroll past. Reduced motion gets the same position
+                          with no travel.
+                        */
                         <motion.span
                           layoutId="activeNavIndicator"
+                          initial={reduceMotion ? false : { opacity: 0 }}
+                          animate={{ opacity: 1 }}
                           className={`absolute bottom-0 left-0 w-full h-[1px] ${
                             isDarkMode ? 'bg-[#00d4ff]' : 'bg-blue-600'
                           }`}
                           style={isDarkMode ? { boxShadow: '0 0 8px rgba(0, 212, 255, 0.8)' } : undefined}
-                          transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                          transition={
+                            reduceMotion
+                              ? { duration: 0 }
+                              : { type: 'spring', stiffness: 520, damping: 42, mass: 0.6 }
+                          }
                         />
                       )}
                     </a>
@@ -141,9 +172,9 @@ export default function Navbar({ activeSection, isDarkMode, toggleTheme, isDetai
               <AnimatePresence mode="wait" initial={false}>
                 <motion.span
                   key={isDarkMode ? 'sun' : 'moon'}
-                  initial={reduceMotion ? false : { opacity: 0, scale: 0.6, filter: 'blur(3px)' }}
-                  animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
-                  exit={reduceMotion ? {} : { opacity: 0, scale: 0.85, filter: 'blur(3px)' }}
+                  initial={reduceMotion ? false : { opacity: 0, scale: 0.6 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={reduceMotion ? {} : { opacity: 0, scale: 0.85 }}
                   transition={{ duration: reduceMotion ? 0 : 0.16, ease: [0.4, 0, 0.2, 1] }}
                   className="absolute grid place-items-center"
                 >
@@ -153,16 +184,35 @@ export default function Navbar({ activeSection, isDarkMode, toggleTheme, isDetai
             </button>
 
             {/* Mobile Menu Button */}
+            {/*
+              Same reasoning as the theme switch: hamburger and close are two
+              states of one control, so the glyphs crossfade — faster here
+              (120ms) because this one also kicks off the drawer, and the two
+              should not read as a queue. Fixed box so the swap cannot nudge
+              the bar's layout.
+            */}
             <div className="flex md:hidden">
               <button
                 aria-expanded={isMobileMenuOpen}
+                aria-controls="mobile-menu"
                 aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className={`rounded-sm transition-ui active:scale-95 motion-reduce:active:scale-100 ${
+                className={`relative grid h-6 w-6 place-items-center rounded-sm transition-ui active:scale-95 motion-reduce:active:scale-100 ${
                   isDarkMode ? 'text-[#cde8ff] hover:text-[#00d4ff]' : 'text-slate-700 hover:text-slate-900'
                 }`}
               >
-                {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                <AnimatePresence mode="wait" initial={false}>
+                  <motion.span
+                    key={isMobileMenuOpen ? 'close' : 'open'}
+                    initial={reduceMotion ? false : { opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={reduceMotion ? {} : { opacity: 0, scale: 0.8 }}
+                    transition={{ duration: reduceMotion ? 0 : 0.12, ease: [0.4, 0, 0.2, 1] }}
+                    className="absolute grid place-items-center"
+                  >
+                    {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                  </motion.span>
+                </AnimatePresence>
               </button>
             </div>
           </div>
@@ -170,25 +220,35 @@ export default function Navbar({ activeSection, isDarkMode, toggleTheme, isDetai
       </nav>
 
       {/* Mobile Drawer Overlay */}
+      {/*
+        The panel is anchored to the bar it comes out of: transform-origin at
+        the top, so it unfolds downward from that edge rather than arriving as a
+        loose slab. The scaleY is tiny (0.97) — enough to read as hinged, small
+        enough not to visibly squash the text. Leaving is shallower and roughly
+        half as long: once you have tapped a link you want the menu gone, not
+        performed at.
+      */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
+            id="mobile-menu"
             initial={reduceMotion ? false : { opacity: 0, y: -12, scaleY: 0.97 }}
             animate={{ opacity: 1, y: 0, scaleY: 1 }}
             exit={
               reduceMotion
-                ? {}
+                ? { opacity: 0 }
                 : {
                     opacity: 0,
-                    y: -8,
-                    transition: { duration: 0.14, ease: [0.5, 0, 0.75, 0] },
+                    y: -6,
+                    scaleY: 0.99,
+                    transition: { duration: 0.18, ease: [0.5, 0, 0.75, 0] },
                   }
             }
-            transition={{ duration: reduceMotion ? 0 : 0.22, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: reduceMotion ? 0 : 0.38, ease: [0.22, 1, 0.36, 1] }}
             style={{ transformOrigin: 'top center' }}
             className={`fixed inset-x-0 top-[57px] z-40 md:hidden flex flex-col p-6 space-y-4 shadow-2xl backdrop-blur-lg bg-opacity-95 ${
-              isDarkMode 
-                ? 'bg-[#000000] border-b border-[#00d4ff]/20' 
+              isDarkMode
+                ? 'bg-[#000000] border-b border-[#00d4ff]/20'
                 : 'bg-white border-b border-slate-200'
             }`}
           >
@@ -202,13 +262,13 @@ export default function Navbar({ activeSection, isDarkMode, toggleTheme, isDetai
                     <a
                       href={link.href}
                       onClick={(e) => handleLinkClick(e, link.href)}
-                      className={`block uppercase py-2 transition-colors duration-200 rounded-md px-3 ${
-                        isActive 
-                          ? isDarkMode 
-                            ? 'text-[#00d4ff] bg-[#00d4ff]/5' 
+                      className={`block uppercase py-2 rounded-md px-3 transition-[color,background-color,transform] duration-[160ms] ease-[cubic-bezier(0.4,0,0.2,1)] active:scale-[0.98] motion-reduce:transition-none motion-reduce:active:scale-100 ${
+                        isActive
+                          ? isDarkMode
+                            ? 'text-[#00d4ff] bg-[#00d4ff]/5'
                             : 'text-blue-600 bg-blue-50 font-medium'
-                          : isDarkMode 
-                            ? 'hover:bg-[#00d4ff]/10 hover:text-[#00d4ff]' 
+                          : isDarkMode
+                            ? 'hover:bg-[#00d4ff]/10 hover:text-[#00d4ff]'
                             : 'hover:bg-slate-100 hover:text-slate-900'
                       }`}
                     >

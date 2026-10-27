@@ -17,11 +17,13 @@ export default function ProjectDetail({ project, onClose, isDarkMode }: ProjectD
   }, [project.id, reduceMotion]);
 
   /*
-   * The page-level enter/exit lives in App.tsx. What happens here is the
-   * second beat: once the subpage has arrived, the instrument panel reads
-   * itself out in order — mark, then identification, then status, then the
-   * way back. Four steps, not one per element, and the breadcrumb stays put
-   * so there is a fixed point to orient against.
+   * App.tsx already brings this whole page in with opacity + y + blur, so
+   * anything in here that also fades and rises just doubles that transform —
+   * stacked blur, multiplied opacity, more travel. Only two things move on
+   * their own: the mark, because a scale is something the page transition
+   * does not do, and the identification plate, because the title is the one
+   * thing that differs between case studies. Breadcrumb, status copy and the
+   * way back arrive with the page.
    */
   const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -69,9 +71,9 @@ export default function ProjectDetail({ project, onClose, isDarkMode }: ProjectD
           {/* Identification: category + title resolve together as one plate. */}
           <motion.div
             key={`${project.id}-id`}
-            initial={reduceMotion ? false : { opacity: 0, y: 12, filter: 'blur(5px)' }}
-            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-            transition={{ duration: reduceMotion ? 0 : 0.42, delay: reduceMotion ? 0 : 0.12, ease }}
+            initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: reduceMotion ? 0 : 0.4, delay: reduceMotion ? 0 : 0.12, ease }}
             className="space-y-4"
           >
             <span className={`font-mono text-xs tracking-wider uppercase px-2.5 py-1 border rounded-sm font-semibold ${
@@ -88,30 +90,20 @@ export default function ProjectDetail({ project, onClose, isDarkMode }: ProjectD
             </h1>
           </motion.div>
 
-          {/* Status: shorter travel, no blur — it reads as a later line, not a repeat. */}
-          <motion.div
-            key={`${project.id}-status`}
-            initial={reduceMotion ? false : { opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: reduceMotion ? 0 : 0.4, delay: reduceMotion ? 0 : 0.2, ease }}
-            className="space-y-4"
-          >
+          {/* Status copy arrives with the page. Body text gets no entrance of its own. */}
+          <div className="space-y-4">
             <p className="font-mono text-lg font-bold text-[#155DFC] uppercase tracking-widest pt-4 pb-1">
               Stay Tuned
             </p>
             <p className={`font-sans text-sm sm:text-base max-w-sm mx-auto leading-relaxed ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
               Case study content and technical details for this project are currently being prepared.
             </p>
-          </motion.div>
+          </div>
         </div>
       </div>
 
-      {/* The exit stays available but arrives last and without travel. */}
-      <motion.div
-        key={`${project.id}-exit`}
-        initial={reduceMotion ? false : { opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: reduceMotion ? 0 : 0.38, delay: reduceMotion ? 0 : 0.28, ease }}
+      {/* The way out is a control: it is present the moment the page is, not delayed in. */}
+      <div
         className={`border-t pt-6 flex justify-center ${isDarkMode ? 'border-slate-800' : 'border-slate-300'}`}
       >
         <button
@@ -125,7 +117,7 @@ export default function ProjectDetail({ project, onClose, isDarkMode }: ProjectD
         >
           Return to Projects
         </button>
-      </motion.div>
+      </div>
     </section>
   );
 }
