@@ -9,8 +9,13 @@ export default function Footer({ isDarkMode }: { isDarkMode: boolean }) {
         isDarkMode ? 'text-[#4a6d8c]' : 'text-slate-500'
       }`}>
         {/* Left Side */}
-        <div className="flex items-center gap-2">
-          <Compass className={`w-4 h-4 animate-spin-slow ${isDarkMode ? 'text-[#00d4ff]' : 'text-blue-600'}`} />
+        {/* The compass turns when you hover the credit line, rather than forever. */}
+        <div className="group flex items-center gap-2">
+          <Compass
+            className={`w-4 h-4 transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:rotate-180 motion-reduce:transition-none motion-reduce:group-hover:rotate-0 ${
+              isDarkMode ? 'text-[#00d4ff]' : 'text-blue-600'
+            }`}
+          />
           <span>© 2026 SAISOUMMEIN &bull; DATA SCIENTIST</span>
         </div>
 

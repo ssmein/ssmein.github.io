@@ -1,8 +1,10 @@
 import { useState, useEffect } from 'react';
-import { motion } from 'motion/react';
+import { motion, useReducedMotion } from 'motion/react';
 import { ArrowDown, ChevronRight } from 'lucide-react';
 
 export default function Hero({ isDarkMode }: { isDarkMode: boolean }) {
+  const reduceMotion = useReducedMotion();
+
   const phrases = [
     'building retrieval systems that answer real questions',
     'turning messy multi-source data into something trustworthy',
@@ -16,6 +18,12 @@ export default function Hero({ isDarkMode }: { isDarkMode: boolean }) {
   const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
+    // Reduced motion: present the line as plain text rather than typing it out.
+    if (reduceMotion) {
+      setDisplayedText(phrases[0]);
+      return;
+    }
+
     let timer: NodeJS.Timeout;
     const currentPhrase = phrases[phraseIndex];
 
@@ -42,7 +50,7 @@ export default function Hero({ isDarkMode }: { isDarkMode: boolean }) {
     }
 
     return () => clearTimeout(timer);
-  }, [displayedText, isDeleting, phraseIndex]);
+  }, [displayedText, isDeleting, phraseIndex, reduceMotion]);
 
   const handleScrollTo = (id: string) => {
     const element = document.querySelector(id);
@@ -76,7 +84,7 @@ export default function Hero({ isDarkMode }: { isDarkMode: boolean }) {
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
         {/* Fine cross grid */}
         <div 
-          className="absolute inset-0 opacity-[0.06] sm:opacity-[0.08] transition-all duration-500"
+          className="absolute inset-0 opacity-[0.06] sm:opacity-[0.08] transition-opacity duration-500"
           style={{
             backgroundImage: gridStyle,
             backgroundSize: '160px 160px, 160px 160px, 40px 40px, 40px 40px'
@@ -96,19 +104,10 @@ export default function Hero({ isDarkMode }: { isDarkMode: boolean }) {
 
         {/* Glowing laser scanline */}
         <div
-          className={`absolute left-0 w-full h-[2px] bg-gradient-to-r pointer-events-none z-10 ${
-            isDarkMode ? 'from-transparent via-[#00d4ff]/25 to-transparent' : 'from-transparent via-[#dfa262]/25 to-transparent'
+          className={`scanline absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r pointer-events-none z-10 ${
+            isDarkMode ? 'from-transparent via-[#00d4ff]/20 to-transparent' : 'from-transparent via-[#dfa262]/20 to-transparent'
           }`}
-          style={{
-            animation: 'scan 6s linear infinite'
-          }}
         />
-        <style>{`
-          @keyframes scan {
-            0% { top: -5% }
-            100% { top: 105% }
-          }
-        `}</style>
       </div>
 
       <div className="relative z-10 max-w-7xl mx-auto w-full pt-16 sm:pt-20 md:pt-24 animate-[fadeIn_0.8s_ease]">
@@ -118,7 +117,7 @@ export default function Hero({ isDarkMode }: { isDarkMode: boolean }) {
           <motion.div
             initial={{ opacity: 0, y: 25 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.4 }}
+            transition={reduceMotion ? { duration: 0 } : { duration: 0.55, delay: 0.04, ease: [0.22, 1, 0.36, 1] }}
             className="flex flex-col items-start w-full"
           >
             <div 
@@ -154,12 +153,9 @@ export default function Hero({ isDarkMode }: { isDarkMode: boolean }) {
                   >
                     {/* Glowing outer representation container */}
                     <span className="absolute inset-0 flex items-center justify-center pointer-events-none" style={{ transform: 'translate(-50%, -50%)', left: '50%', top: '50%' }}>
-                      {/* Pulsing expand ring */}
-                      <span className="absolute w-[400%] h-[400%] rounded-full border border-[#00d4ff]/50 animate-ping opacity-60" style={{ animationDuration: '2s' }} />
-                      
                       {/* Sunburst glowing rays slowly rotating */}
                       <svg 
-                        className="absolute w-[500%] h-[500%] animate-[spin_10s_linear_infinite]" 
+                        className={`absolute w-[500%] h-[500%] ${reduceMotion ? '' : 'animate-[spin_18s_linear_infinite]'}`} 
                         viewBox="0 0 100 100"
                         style={{ overflow: 'visible' }}
                       >
@@ -185,7 +181,7 @@ export default function Hero({ isDarkMode }: { isDarkMode: boolean }) {
                               stroke="url(#ray-grad-dynamic)"
                               strokeWidth="3.5"
                               style={{
-                                animation: 'pulse-ray 2s ease-in-out infinite alternate',
+                                animation: reduceMotion ? 'none' : 'pulse-ray 3.2s cubic-bezier(0.4, 0, 0.2, 1) infinite alternate',
                                 animationDelay: `${idx * 120}ms`
                               }}
                             />
@@ -205,7 +201,7 @@ export default function Hero({ isDarkMode }: { isDarkMode: boolean }) {
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.6 }}
+          transition={reduceMotion ? { duration: 0 } : { duration: 0.5, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
           className={`max-w-2xl font-sans text-lg sm:text-xl md:text-2xl font-light tracking-[1px] mb-6 mt-6 sm:mt-8 md:mt-10 lg:mt-12 ${
             isDarkMode ? 'text-[#4a6d8c]' : 'text-slate-600'
           }`}
@@ -217,7 +213,7 @@ export default function Hero({ isDarkMode }: { isDarkMode: boolean }) {
         <motion.div
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.8 }}
+          transition={reduceMotion ? { duration: 0 } : { duration: 0.5, delay: 0.19, ease: [0.22, 1, 0.36, 1] }}
           className={`min-h-[40px] font-mono text-sm sm:text-base md:text-lg flex items-center gap-1.5 mb-8 select-all ${
             isDarkMode ? 'text-[#00d4ff]' : 'text-blue-600'
           }`}
@@ -226,19 +222,19 @@ export default function Hero({ isDarkMode }: { isDarkMode: boolean }) {
           <span className={`${isDarkMode ? 'text-[#cde8ff] opacity-70' : 'text-slate-800 opacity-80'} font-light`}>saisoummein</span>
           <span className={`${isDarkMode ? 'text-[#00d4ff]' : 'text-blue-600'} font-semibold`}>~</span>
           <span>{displayedText}</span>
-          <span className={`inline-block w-[8px] h-[1.1em] ${isDarkMode ? 'bg-[#00d4ff]' : 'bg-blue-600'} animate-[blink_0.9s_step-end_infinite] align-middle`} />
+          <span className={`inline-block w-[8px] h-[1.1em] ${isDarkMode ? 'bg-[#00d4ff]' : 'bg-blue-600'} ${reduceMotion ? '' : 'animate-[blink_1.05s_step-end_infinite]'} align-middle`} />
         </motion.div>
 
         {/* Call to Actions */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 1 }}
+          transition={reduceMotion ? { duration: 0 } : { duration: 0.5, delay: 0.26, ease: [0.22, 1, 0.36, 1] }}
           className="flex flex-wrap gap-4 sm:gap-6 items-center"
         >
           <button
             onClick={() => handleScrollTo('#projects')}
-            className={`group relative px-6 py-3.5 font-mono text-sm uppercase tracking-[3px] border overflow-hidden transition-all duration-300 cursor-pointer ${
+            className={`group relative px-6 py-3.5 font-mono text-sm uppercase tracking-[3px] border overflow-hidden transition-ui cursor-pointer ${
               isDarkMode 
                 ? 'text-[#00d4ff] border-[#00d4ff]/30 bg-[#00d4ff]/5 hover:border-[#00d4ff] hover:text-[#020c1b]'
                 : 'text-blue-600 border-blue-600/30 bg-blue-600/5 hover:border-blue-600 hover:text-white'
@@ -255,7 +251,7 @@ export default function Hero({ isDarkMode }: { isDarkMode: boolean }) {
 
           <button
             onClick={() => handleScrollTo('#contact')}
-            className={`group px-6 py-3.5 font-mono text-sm uppercase tracking-[3px] border transition-all duration-300 cursor-pointer ${
+            className={`group px-6 py-3.5 font-mono text-sm uppercase tracking-[3px] border transition-ui cursor-pointer ${
               isDarkMode 
                 ? 'text-[#4a6d8c] border-[#4a6d8c]/30 hover:border-[#cde8ff] hover:text-[#cde8ff]'
                 : 'text-slate-655 border-slate-300 hover:border-slate-800 hover:text-slate-900'
@@ -270,8 +266,12 @@ export default function Hero({ isDarkMode }: { isDarkMode: boolean }) {
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10 opacity-70">
         <span className={`font-mono text-[9px] tracking-[5px] uppercase ${isDarkMode ? 'text-[#4a6d8c]' : 'text-slate-500'}`}>PORTFOLIO 2026</span>
         <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ repeat: Infinity, duration: 1.5, ease: 'easeInOut' }}
+          animate={reduceMotion ? { y: 0 } : { y: [0, 7, 0] }}
+          transition={
+            reduceMotion
+              ? { duration: 0 }
+              : { repeat: Infinity, duration: 2.4, ease: [0.4, 0, 0.2, 1], repeatDelay: 0.6 }
+          }
           className="cursor-pointer"
           onClick={() => handleScrollTo('#about')}
         >

@@ -1,6 +1,6 @@
 import { useState, useEffect, MouseEvent } from 'react';
 import { Menu, X, Terminal, Sun, Moon } from 'lucide-react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 
 interface NavbarProps {
   activeSection: string;
@@ -11,6 +11,7 @@ interface NavbarProps {
 }
 
 export default function Navbar({ activeSection, isDarkMode, toggleTheme, isDetailedMode, onCloseDetail }: NavbarProps) {
+  const reduceMotion = useReducedMotion();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -54,7 +55,7 @@ export default function Navbar({ activeSection, isDarkMode, toggleTheme, isDetai
     <>
       <nav
         id="navbar"
-        className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 border-b border-opacity-10 ${
+        className={`fixed top-0 left-0 w-full z-50 transition-ui border-b border-opacity-10 ${
           isScrolled
             ? isDarkMode
               ? 'bg-[#000000]/90 backdrop-blur-md py-3 border-[#00d4ff]'
@@ -67,12 +68,12 @@ export default function Navbar({ activeSection, isDarkMode, toggleTheme, isDetai
           <a
             href="#home"
             onClick={(e) => handleLinkClick(e, '#home')}
-            className={`flex items-center gap-2 font-display text-xl sm:text-2xl tracking-[3px] transition-all hover:brightness-125 focus:outline-none ${
+            className={`flex items-center gap-2 font-display text-xl sm:text-2xl tracking-[3px] transition-ui hover:brightness-125 focus:outline-none ${
               isDarkMode ? 'text-[#00d4ff]' : 'text-slate-900 font-bold'
             }`}
             style={isDarkMode ? { textShadow: '0 0 15px rgba(0, 212, 255, 0.4)' } : undefined}
           >
-            <Terminal className={`w-5 h-5 ${isDarkMode ? 'animate-pulse' : ''}`} />
+            <Terminal className="w-5 h-5" />
             <span>S.AI</span>
           </a>
 
@@ -113,17 +114,33 @@ export default function Navbar({ activeSection, isDarkMode, toggleTheme, isDetai
             </ul>
 
             {/* Combined Sun/Moon Theme Switcher */}
+            {/*
+              High-frequency control, so the button itself reacts instantly.
+              The icon crossfades rather than swapping hard — an instant swap on
+              a 16px glyph is easy to miss and reads as a glitch.
+            */}
             <button
               onClick={toggleTheme}
-              className={`p-1.5 rounded-full border transition-all cursor-pointer focus:outline-none ${
-                isDarkMode 
-                  ? 'border-[#00d4ff]/20 text-[#00d4ff] hover:bg-[#00d4ff]/10 hover:border-[#00d4ff]/50' 
+              className={`relative grid h-7 w-7 place-items-center rounded-full border cursor-pointer transition-colors duration-[var(--dur-instant)] active:scale-95 motion-reduce:active:scale-100 ${
+                isDarkMode
+                  ? 'border-[#00d4ff]/20 text-[#00d4ff] hover:bg-[#00d4ff]/10 hover:border-[#00d4ff]/50'
                   : 'border-slate-300 text-blue-600 hover:bg-slate-100 hover:border-slate-400'
               }`}
-              aria-label="Toggle structural simulation scheme theme"
-              title="Toggle Structural Simulator Theme"
+              aria-label={isDarkMode ? 'Switch to light theme' : 'Switch to dark theme'}
+              aria-pressed={isDarkMode}
             >
-              {isDarkMode ? <Sun className="w-4 h-4 animate-spin-slow" /> : <Moon className="w-4 h-4" />}
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.span
+                  key={isDarkMode ? 'sun' : 'moon'}
+                  initial={reduceMotion ? false : { opacity: 0, scale: 0.6, filter: 'blur(3px)' }}
+                  animate={{ opacity: 1, scale: 1, filter: 'blur(0px)' }}
+                  exit={reduceMotion ? {} : { opacity: 0, scale: 0.85, filter: 'blur(3px)' }}
+                  transition={{ duration: reduceMotion ? 0 : 0.16, ease: [0.4, 0, 0.2, 1] }}
+                  className="absolute grid place-items-center"
+                >
+                  {isDarkMode ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+                </motion.span>
+              </AnimatePresence>
             </button>
 
             {/* Mobile Menu Button */}

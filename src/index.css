@@ -7,6 +7,30 @@
   --font-display: "Bebas Neue", sans-serif;
 }
 
+/*
+ * Motion system.
+ *
+ * Durations are banded by how often a user triggers the interaction, not by
+ * how important it feels. Anything a visitor hits repeatedly (nav, toggle,
+ * inputs) is near-instant; one-off arrivals get room to breathe.
+ *
+ * Easings are custom curves — the built-in `ease` / `ease-in-out` keywords are
+ * too weak to read as intentional at these durations.
+ */
+:root {
+  /* Arrivals: fast out of the gate, long gentle settle. */
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+  /* Departures: quicker, the user is already looking elsewhere. */
+  --ease-in-quart: cubic-bezier(0.5, 0, 0.75, 0);
+  /* Two-way state changes on visible elements. */
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+
+  --dur-instant: 90ms;  /* high-frequency: nav links, inputs, toggles */
+  --dur-fast: 160ms;    /* hover and press feedback */
+  --dur-base: 260ms;    /* state changes, theme swap */
+  --dur-slow: 440ms;    /* entrances and section reveals */
+}
+
 html {
   scroll-behavior: smooth;
   scroll-padding-top: 70px;
@@ -24,7 +48,7 @@ body::before {
   content: '';
   position: fixed;
   inset: 0;
-  background-image: 
+  background-image:
     radial-gradient(rgba(0, 212, 255, 0.05) 1px, transparent 1px);
   background-size: 32px 32px;
   pointer-events: none;
@@ -49,6 +73,23 @@ body::before {
   background: rgba(0, 212, 255, 0.3);
 }
 
+/* Keyboard focus has to survive on both themes. */
+:focus-visible {
+  outline: 2px solid #00d4ff;
+  outline-offset: 3px;
+}
+
+/*
+ * Interactive surfaces transition only the properties they actually change.
+ * `transition-all` also animates layout properties (width, padding, margin),
+ * which forces reflow mid-interaction — it was used 24 times here.
+ */
+.transition-ui {
+  transition-property: color, background-color, border-color, box-shadow, transform, opacity, filter;
+  transition-duration: var(--dur-fast);
+  transition-timing-function: var(--ease-standard);
+}
+
 @keyframes spin-slow {
   from {
     transform: rotate(0deg);
@@ -58,17 +99,67 @@ body::before {
   }
 }
 
+/*
+ * Brand element only: the glowing dot on the "i" of Portfolio.
+ * This is the one deliberate looping motion on the page — it is the logo mark,
+ * not a status indicator. Everything else that looped has been removed or made
+ * user-triggered. Disabled entirely under reduced motion, below.
+ */
 @keyframes pulse-ray {
   0% {
-    opacity: 0.35;
-    transform: scale(0.85);
+    opacity: 0.4;
+    transform: scale(0.9);
   }
   100% {
-    opacity: 1;
-    transform: scale(1.15);
+    opacity: 0.9;
+    transform: scale(1.1);
   }
 }
 
 .animate-spin-slow {
   animation: spin-slow 15s linear infinite;
+}
+
+/*
+ * The scanner sweep runs twice on load — enough to read as an instrument
+ * booting up, without becoming permanent ambient motion in the user's
+ * peripheral vision.
+ */
+@keyframes scan {
+  from {
+    transform: translateY(-5vh);
+  }
+  to {
+    transform: translateY(105vh);
+  }
+}
+
+.scanline {
+  animation: scan 7s var(--ease-standard) 2;
+  animation-fill-mode: backwards;
+}
+
+/*
+ * Reduced motion. Functional transitions collapse to near-zero rather than
+ * being removed, so final states still apply and nothing breaks.
+ */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Purely decorative loops: remove outright rather than freeze mid-cycle. */
+  .animate-spin-slow,
+  .scanline {
+    animation: none !important;
+  }
 }

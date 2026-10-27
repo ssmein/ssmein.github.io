@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { ArrowUpRight } from 'lucide-react';
 import { projectsData } from '../data';
 import { Project } from '../types';
@@ -10,6 +10,7 @@ interface ProjectsProps {
 }
 
 export default function Projects({ isDarkMode, onSelectProject }: ProjectsProps) {
+  const reduceMotion = useReducedMotion();
   const [selectedCategory, setSelectedCategory] = useState<Project['category'] | 'All'>('All');
 
   const categories: (Project['category'] | 'All')[] = [
@@ -46,7 +47,7 @@ export default function Projects({ isDarkMode, onSelectProject }: ProjectsProps)
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-3 py-1.5 border transition-all cursor-pointer rounded-xs ${
+                className={`px-3 py-1.5 border transition-ui cursor-pointer rounded-xs ${
                   selectedCategory === cat
                     ? isDarkMode 
                       ? 'border-[#00d4ff] text-[#00d4ff] bg-[#00d4ff]/5'
@@ -74,14 +75,33 @@ export default function Projects({ isDarkMode, onSelectProject }: ProjectsProps)
           <AnimatePresence mode="popLayout">
             {filteredProjects.map((project) => (
               <motion.div
-                layout
-                initial={{ opacity: 0, y: 15 }}
+                layout={!reduceMotion}
+                initial={reduceMotion ? false : { opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.4 }}
+                /* Exit travels less than enter and resolves faster: the card is
+                   leaving because the user filtered it out, so it should get
+                   out of the way rather than perform. */
+                exit={
+                  reduceMotion
+                    ? {}
+                    : { opacity: 0, y: -4, transition: { duration: 0.16, ease: [0.5, 0, 0.75, 0] } }
+                }
+                transition={{ duration: reduceMotion ? 0 : 0.38, ease: [0.22, 1, 0.36, 1] }}
                 key={project.id}
+                role="button"
+                tabIndex={0}
+                aria-label={`Open case study: ${project.title}`}
                 onClick={() => onSelectProject(project)}
-                className={`group border p-6 sm:p-8 flex flex-col justify-between rounded-sm transition-all duration-300 cursor-pointer relative overflow-hidden ${
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onSelectProject(project);
+                  }
+                }}
+                /* Only the properties that actually change are transitioned, and
+                   at hover speed rather than 300ms. active: gives the press a
+                   physical response. */
+                className={`group border p-6 sm:p-8 flex flex-col justify-between rounded-sm cursor-pointer relative overflow-hidden transition-[border-color,box-shadow,transform] duration-[160ms] ease-[cubic-bezier(0.22,1,0.36,1)] active:scale-[0.995] motion-reduce:active:scale-100 ${
                   isDarkMode 
                     ? 'border-[#00d4ff]/10 bg-[#041325]/40 hover:border-[#00d4ff] hover:shadow-[0_0_35px_rgba(0,212,255,0.06)]' 
                     : 'border-slate-200 bg-white hover:border-slate-400 hover:shadow-lg hover:shadow-slate-100'

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { motion } from 'motion/react';
+import { motion, useReducedMotion } from 'motion/react';
 import { statsData } from '../data';
 
 interface CounterProps {
@@ -9,41 +9,53 @@ interface CounterProps {
 }
 
 function AnimatedCounter({ target, suffix, isDarkMode }: CounterProps) {
-  const [count, setCount] = useState(0);
+  const reduceMotion = useReducedMotion();
+  const [count, setCount] = useState(reduceMotion ? target : 0);
   const elementRef = useRef<HTMLDivElement>(null);
-  const [hasAnimated, setHasAnimated] = useState(false);
+  const hasAnimated = useRef(false);
 
   useEffect(() => {
+    // Reduced motion: the number is the content, so show it — just don't count.
+    if (reduceMotion) {
+      setCount(target);
+      return;
+    }
+
+    const el = elementRef.current;
+    if (!el) return;
+
+    let rafId = 0;
+    let startedAt = 0;
+
+    // Decelerating curve, so the number lands rather than stopping dead.
+    const easeOutQuint = (t: number) => 1 - Math.pow(1 - t, 5);
+
+    const tick = (now: number) => {
+      if (!startedAt) startedAt = now;
+      const progress = Math.min((now - startedAt) / 1100, 1);
+      setCount(Math.round(easeOutQuint(progress) * target));
+      if (progress < 1) rafId = requestAnimationFrame(tick);
+    };
+
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && !hasAnimated) {
-          setHasAnimated(true);
-          let start = 0;
-          const end = target;
-          const duration = 1200; // ms
-          const increment = Math.max(1, Math.floor(end / 30));
-          const stepTime = Math.abs(Math.floor(duration / (end / increment)));
-
-          const timer = setInterval(() => {
-            start += increment;
-            if (start >= end) {
-              setCount(end);
-              clearInterval(timer);
-            } else {
-              setCount(start);
-            }
-          }, stepTime);
+        if (entries[0].isIntersecting && !hasAnimated.current) {
+          hasAnimated.current = true;
+          rafId = requestAnimationFrame(tick);
         }
       },
       { threshold: 0.1 }
     );
 
-    if (elementRef.current) {
-      observer.observe(elementRef.current);
-    }
+    observer.observe(el);
 
-    return () => observer.disconnect();
-  }, [target, hasAnimated]);
+    // Cancel the frame loop too — the old version leaked its interval and set
+    // state after unmount.
+    return () => {
+      observer.disconnect();
+      if (rafId) cancelAnimationFrame(rafId);
+    };
+  }, [target, reduceMotion]);
 
   return (
     <div 
@@ -60,6 +72,8 @@ function AnimatedCounter({ target, suffix, isDarkMode }: CounterProps) {
 }
 
 export default function About({ isDarkMode }: { isDarkMode: boolean }) {
+  const reduceMotion = useReducedMotion();
+
   return (
     <section 
       id="about" 
@@ -96,10 +110,14 @@ export default function About({ isDarkMode }: { isDarkMode: boolean }) {
             return (
               <motion.div
                 key={stat.id}
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
+                initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-40px' }}
+                transition={
+                  reduceMotion
+                    ? { duration: 0 }
+                    : { duration: 0.42, delay: idx * 0.055, ease: [0.22, 1, 0.36, 1] }
+                }
                 onClick={() => {
                   if (isCerts) {
                     const el = document.getElementById('education');
@@ -108,7 +126,7 @@ export default function About({ isDarkMode }: { isDarkMode: boolean }) {
                     }
                   }
                 }}
-                className={`p-6 flex flex-col justify-center items-center text-center rounded-sm transition-all group border ${
+                className={`p-6 flex flex-col justify-center items-center text-center rounded-sm transition-ui group border ${
                   isCerts ? 'cursor-pointer hover:scale-[1.02]' : ''
                 } ${
                   isDarkMode 

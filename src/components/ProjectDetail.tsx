@@ -49,7 +49,7 @@ export default function ProjectDetail({ project, onClose, isDarkMode }: ProjectD
             isDarkMode ? 'bg-slate-900/50 border-slate-800/80' : 'bg-slate-100 border-slate-200'
           }`}
         >
-          <Clock className={`w-12 h-12 ${isDarkMode ? 'text-[#00d4ff]' : 'text-blue-600'} animate-pulse`} />
+          <Clock className={`w-12 h-12 ${isDarkMode ? 'text-[#00d4ff]' : 'text-blue-600'}`} />
         </motion.div>
 
         <div className="space-y-4">
@@ -77,7 +77,7 @@ export default function ProjectDetail({ project, onClose, isDarkMode }: ProjectD
       <div className={`border-t pt-6 flex justify-center ${isDarkMode ? 'border-slate-800' : 'border-slate-300'}`}>
         <button
           onClick={onClose}
-          className={`px-6 py-2 border font-mono text-xs uppercase tracking-wider transition-all cursor-pointer rounded-xs ${
+          className={`px-6 py-2 border font-mono text-xs uppercase tracking-wider transition-ui cursor-pointer rounded-xs ${
             isDarkMode 
               ? 'border-slate-800 hover:border-slate-600 text-slate-300 hover:text-white' 
               : 'border-slate-350 hover:border-slate-800 text-slate-800 hover:text-black'

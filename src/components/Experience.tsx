@@ -84,7 +84,7 @@ export default function Experience({ isDarkMode }: { isDarkMode: boolean }) {
               <button
                 onClick={scrollToEducation}
                 id="experience-goto-education"
-                className={`px-4 py-2.5 border font-mono text-xs uppercase tracking-wider transition-all duration-300 rounded-xs cursor-pointer focus:outline-none flex items-center gap-2 font-semibold ${
+                className={`px-4 py-2.5 border font-mono text-xs uppercase tracking-wider transition-ui rounded-xs cursor-pointer focus:outline-none flex items-center gap-2 font-semibold ${
                   isDarkMode
                     ? 'border-[#00d4ff]/40 text-[#00d4ff] bg-[#00d4ff]/5 hover:bg-[#00d4ff]/15 hover:border-[#00d4ff]'
                     : 'border-blue-200 text-blue-700 bg-blue-50/70 hover:bg-blue-100/50 hover:border-blue-400 shadow-xs'
@@ -136,7 +136,7 @@ export default function Experience({ isDarkMode }: { isDarkMode: boolean }) {
                   </div>
 
                   {/* Card container */}
-                  <div className={`p-6 rounded-sm space-y-4 border transition-all duration-300 ${
+                  <div className={`p-6 rounded-sm space-y-4 border transition-ui ${
                     isDarkMode 
                       ? 'bg-[#041325]/20 border-[#00d4ff]/5 hover:border-[#00d4ff]/10' 
                       : 'bg-white shadow-xs border-slate-200 hover:border-slate-400'
@@ -269,7 +269,7 @@ export default function Experience({ isDarkMode }: { isDarkMode: boolean }) {
                       </div>
 
                       {/* Card wrapper */}
-                      <div className={`p-6 rounded-sm space-y-4 border transition-all duration-300 ${
+                      <div className={`p-6 rounded-sm space-y-4 border transition-ui ${
                         isDarkMode 
                           ? 'bg-[#041325]/20 border-[#00d4ff]/10 hover:border-[#00d4ff]/25' 
                           : 'bg-white shadow-xs border-slate-200 hover:border-slate-400'
@@ -357,7 +357,7 @@ export default function Experience({ isDarkMode }: { isDarkMode: boolean }) {
                     >
                       {/* Timeline Award point marker */}
                       <div 
-                        className={`absolute -left-[30px] sm:-left-[46px] top-2.5 w-3.5 h-3.5 border transform rotate-45 flex items-center justify-center transition-all duration-300 group-hover:scale-110 ${
+                        className={`absolute -left-[30px] sm:-left-[46px] top-2.5 w-3.5 h-3.5 border transform rotate-45 flex items-center justify-center transition-ui group-hover:scale-110 ${
                           isDarkMode ? 'bg-[#000000] border-[#39ff14]' : 'bg-white border-green-600'
                         }`}
                         style={isDarkMode ? { boxShadow: '0 0 10px rgba(57, 255, 20, 0.4)' } : undefined}
@@ -366,7 +366,7 @@ export default function Experience({ isDarkMode }: { isDarkMode: boolean }) {
                       </div>
 
                       {/* Card wrapper - compact & smaller */}
-                      <div className={`p-4 sm:p-5 rounded-sm space-y-3.5 border transition-all duration-300 ${
+                      <div className={`p-4 sm:p-5 rounded-sm space-y-3.5 border transition-ui ${
                         isDarkMode 
                           ? 'bg-[#041325]/10 border-[#00d4ff]/10 hover:border-[#39ff14]/35 hover:bg-[#041325]/25' 
                           : 'bg-white shadow-xs border-slate-200 hover:border-green-400 hover:shadow-xs'
@@ -375,7 +375,7 @@ export default function Experience({ isDarkMode }: { isDarkMode: boolean }) {
                           <div>
                             <div className="flex flex-wrap items-center gap-2">
                               <span className={`font-mono text-xs tracking-[3px] uppercase ${isDarkMode ? 'text-[#39ff14]' : 'text-green-700'} flex items-center gap-1.5`}>
-                                <Award className="w-3.5 h-3.5 animate-pulse" />
+                                <Award className="w-3.5 h-3.5" />
                                 {item.period}
                               </span>
                               <span className={`text-[9px] font-mono tracking-wider px-1.5 py-0.5 uppercase border rounded-xs ${
@@ -507,7 +507,7 @@ export default function Experience({ isDarkMode }: { isDarkMode: boolean }) {
                       href={selectedCourse.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-sm font-mono text-xs uppercase tracking-wider font-bold transition-all w-full ${
+                      className={`inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-sm font-mono text-xs uppercase tracking-wider font-bold transition-ui w-full ${
                         isDarkMode
                           ? 'bg-[#00d4ff]/10 hover:bg-[#00d4ff]/25 border border-[#00d4ff]/25 text-[#00d4ff]'
                           : 'bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700'
@@ -525,7 +525,7 @@ export default function Experience({ isDarkMode }: { isDarkMode: boolean }) {
                   <div className="pt-2 text-center">
                     <a
                       href="mailto:ssoummein@gmail.com?subject=Verification%20Request%3A%20Revit/Dynamo%20BIM%2520Certificate"
-                      className={`inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-sm font-mono text-xs uppercase tracking-wider font-bold transition-all w-full ${
+                      className={`inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-sm font-mono text-xs uppercase tracking-wider font-bold transition-ui w-full ${
                         isDarkMode
                           ? 'bg-[#39ff14]/10 hover:bg-[#39ff14]/20 border border-[#39ff14]/20 text-[#39ff14]'
                           : 'bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800'

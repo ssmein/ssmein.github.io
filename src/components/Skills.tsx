@@ -1,7 +1,9 @@
-import { motion } from 'motion/react';
+import { motion, useReducedMotion } from 'motion/react';
 import { skillGroupsData } from '../data';
 
 export default function Skills({ isDarkMode }: { isDarkMode: boolean }) {
+  const reduceMotion = useReducedMotion();
+
   return (
     <section 
       id="skills" 
@@ -23,7 +25,7 @@ export default function Skills({ isDarkMode }: { isDarkMode: boolean }) {
           {skillGroupsData.map((group, groupIdx) => (
             <div
               key={group.category}
-              className={`p-6 rounded-sm flex flex-col transition-all border ${
+              className={`p-6 rounded-sm flex flex-col transition-ui border ${
                 isDarkMode 
                   ? 'bg-[#041325]/30 border-[#00d4ff]/10 hover:border-[#00d4ff]/20' 
                   : 'bg-white shadow-xs border-slate-200 hover:border-slate-450'
@@ -49,12 +51,22 @@ export default function Skills({ isDarkMode }: { isDarkMode: boolean }) {
 
                     {/* Progress Bar Container */}
                     <div className={`h-[2px] w-full rounded-full overflow-hidden ${isDarkMode ? 'bg-[#4a6d8c]/10' : 'bg-slate-200'}`}>
+                      {/* scaleX, not width: width animation forces layout on every frame. */}
                       <motion.div
-                        initial={{ width: 0 }}
-                        whileInView={{ width: `${skill.tier}` }}
+                        initial={reduceMotion ? false : { scaleX: 0 }}
+                        whileInView={{ scaleX: skill.level / 100 }}
                         viewport={{ once: true, margin: '-50px' }}
-                        transition={{ duration: 1.2, delay: skillIdx * 0.08 + groupIdx * 0.1, ease: 'easeOut' }}
-                        className={`h-full bg-gradient-to-r ${
+                        transition={
+                          reduceMotion
+                            ? { duration: 0 }
+                            : {
+                                duration: 0.7,
+                                delay: skillIdx * 0.05 + groupIdx * 0.06,
+                                ease: [0.22, 1, 0.36, 1],
+                              }
+                        }
+                        style={{ transformOrigin: 'left center' }}
+                        className={`h-full w-full origin-left bg-gradient-to-r ${
                           isDarkMode ? 'from-[#00d4ff] to-[#39ff14]' : 'from-blue-600 to-cyan-500'
                         }`}
                       />
