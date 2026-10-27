@@ -1,62 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Bebas+Neue&family=Exo+2:wght@300;450;600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
-  /* Cool paper and blue-black ink: a drawing sheet, not a cream notebook. */
-  --color-paper: #f7f8f7;
-  --color-paper-sunk: #eef0ef;
-  --color-ink: #15202b;
-  --color-slate: #5a6a6b;
-  --color-rule: #d3d8d6;
-
-  /* Two career tracks. Earth for site work, survey green for data work. */
-  --color-site: #8a6a3d;
-  --color-data: #1f5c4d;
-
-  --font-display: "Archivo", ui-sans-serif, system-ui, sans-serif;
-  --font-body: "Source Serif 4", ui-serif, Georgia, serif;
+  --font-sans: "Exo 2", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: "Share Tech Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-display: "Bebas Neue", sans-serif;
 }
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 5rem;
-  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: 70px;
 }
 
 body {
-  background-color: var(--color-paper);
-  color: var(--color-ink);
-  font-family: var(--font-body);
-  font-optical-sizing: auto;
-  -webkit-font-smoothing: antialiased;
-  text-rendering: optimizeLegibility;
+  background-color: #000000;
+  color: #cde8ff;
+  font-family: var(--font-sans);
+  overflow-x: hidden;
 }
 
-/* Tabular figures everywhere numbers are compared down a column. */
-.nums {
-  font-family: var(--font-display);
-  font-variant-numeric: tabular-nums;
-  font-feature-settings: "tnum" 1;
+/* Custom fine dotted blueprint background */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: 
+    radial-gradient(rgba(0, 212, 255, 0.05) 1px, transparent 1px);
+  background-size: 32px 32px;
+  pointer-events: none;
+  z-index: 0;
 }
 
-/* Visible, unmistakable keyboard focus. */
-:focus-visible {
-  outline: 2px solid var(--color-data);
-  outline-offset: 3px;
-  border-radius: 1px;
+/* Custom scroll bar style directly inline elements */
+::-webkit-scrollbar {
+  width: 6px;
 }
 
-::selection {
-  background: color-mix(in srgb, var(--color-data) 22%, transparent);
-  color: var(--color-ink);
+::-webkit-scrollbar-track {
+  background: #000000;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 212, 255, 0.15);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 212, 255, 0.3);
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
   }
-  *,
-  *::before,
-  *::after {
-    transition-duration: 0.01ms !important;
+  to {
+    transform: rotate(360deg);
   }
+}
+
+@keyframes pulse-ray {
+  0% {
+    opacity: 0.35;
+    transform: scale(0.85);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1.15);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 15s linear infinite;
 }

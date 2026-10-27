@@ -1,44 +1,54 @@
-export type Track = 'education' | 'site' | 'data';
-
-export type Discipline = 'AI systems' | 'Internal tools' | 'Analytics';
-
 export interface Project {
   id: string;
   title: string;
-  discipline: Discipline;
+  category: 'AI Systems' | 'Internal Tools' | 'Analytics' | 'All';
+  type: string;
   /** Named only as far as confidentiality allows. */
   client: string;
-  /** One line on why the work existed. */
-  problem: string;
-  summary: string;
-  /** The decisions worth reading, one paragraph each. */
-  detail: string[];
-  outcome: string;
-  stack: string[];
-  figures: { label: string; value: string }[];
-  /** True when the work is under NDA, so the page can say so plainly. */
+  /** True when the work is under NDA, so the UI can say so plainly. */
   confidential?: boolean;
-  diagram?: 'rag';
+  /** Why the work existed. */
+  problem: string;
+  description: string;
+  longDescription: string;
+  tags: string[];
+  metrics: { label: string; value: string }[];
+  impact: string;
   images?: string[];
+  technicalSpecs?: { label: string; value: string }[];
+  diagrams?: { title: string; url: string; caption: string }[];
 }
 
-export interface Role {
+export interface Experience {
   id: string;
   period: string;
   role: string;
   company: string;
   location: string;
-  track: Track;
-  work: string[];
-  tools: string[];
+  description: string[];
+  skillsUsed: string[];
+  type?: string;
 }
 
 export type Tier = 'Core' | 'Working' | 'Exposure';
 
+export interface Skill {
+  name: string;
+  /** Bar width only. The tier is what gets shown — see Skills.tsx. */
+  level: number;
+  tier: Tier;
+}
+
 export interface SkillGroup {
   category: string;
-  note: string;
-  skills: { name: string; tier: Tier }[];
+  skills: Skill[];
+}
+
+export interface Stat {
+  id: string;
+  count: number;
+  suffix: string;
+  label: string;
 }
 
 export interface Degree {
@@ -47,15 +57,23 @@ export interface Degree {
   institution: string;
   period: string;
   location: string;
-  notes: { text: string; href?: string }[];
+  details: string[];
 }
 
-export interface Credential {
+export interface Certificate {
   id: string;
   title: string;
   issuer: string;
   year: string;
-  detail: string;
-  href?: string;
+  details: string;
+}
+
+export interface SpecialCourse {
+  id: string;
+  title: string;
+  issuer: string;
+  year: string;
+  link?: string;
+  isPdf?: boolean;
   syllabus?: string[];
 }
