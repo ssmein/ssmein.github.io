@@ -23,6 +23,15 @@ export default function Navbar({ activeSection, isDarkMode, toggleTheme, isDetai
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setIsMobileMenuOpen(false);
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [isMobileMenuOpen]);
+
   const navLinks = [
     { label: 'About', href: '#about' },
     { label: 'Skills', href: '#skills' },
@@ -146,11 +155,12 @@ export default function Navbar({ activeSection, isDarkMode, toggleTheme, isDetai
             {/* Mobile Menu Button */}
             <div className="flex md:hidden">
               <button
+                aria-expanded={isMobileMenuOpen}
+                aria-label={isMobileMenuOpen ? 'Close menu' : 'Open menu'}
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                className={`focus:outline-none ${
+                className={`rounded-sm transition-ui active:scale-95 motion-reduce:active:scale-100 ${
                   isDarkMode ? 'text-[#cde8ff] hover:text-[#00d4ff]' : 'text-slate-700 hover:text-slate-900'
                 }`}
-                aria-label="Toggle menu"
               >
                 {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
@@ -163,10 +173,19 @@ export default function Navbar({ activeSection, isDarkMode, toggleTheme, isDetai
       <AnimatePresence>
         {isMobileMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.2 }}
+            initial={reduceMotion ? false : { opacity: 0, y: -12, scaleY: 0.97 }}
+            animate={{ opacity: 1, y: 0, scaleY: 1 }}
+            exit={
+              reduceMotion
+                ? {}
+                : {
+                    opacity: 0,
+                    y: -8,
+                    transition: { duration: 0.14, ease: [0.5, 0, 0.75, 0] },
+                  }
+            }
+            transition={{ duration: reduceMotion ? 0 : 0.22, ease: [0.22, 1, 0.36, 1] }}
+            style={{ transformOrigin: 'top center' }}
             className={`fixed inset-x-0 top-[57px] z-40 md:hidden flex flex-col p-6 space-y-4 shadow-2xl backdrop-blur-lg bg-opacity-95 ${
               isDarkMode 
                 ? 'bg-[#000000] border-b border-[#00d4ff]/20' 

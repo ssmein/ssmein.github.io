@@ -53,10 +53,11 @@ export default function Hero({ isDarkMode }: { isDarkMode: boolean }) {
   }, [displayedText, isDeleting, phraseIndex, reduceMotion]);
 
   const handleScrollTo = (id: string) => {
-    const element = document.querySelector(id);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
+    // behavior:'smooth' here overrides the reduced-motion rule in index.css,
+    // so the preference has to be honoured explicitly.
+    document
+      .querySelector(id)
+      ?.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
   };
 
   const gridStyle = isDarkMode
@@ -110,7 +111,7 @@ export default function Hero({ isDarkMode }: { isDarkMode: boolean }) {
         />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto w-full pt-16 sm:pt-20 md:pt-24 animate-[fadeIn_0.8s_ease]">
+      <div className="relative z-10 max-w-7xl mx-auto w-full pt-16 sm:pt-20 md:pt-24">
         {/* Large Aesthetic Name & Portfolio Graphic */}
         <div className="relative flex flex-col items-start select-none mb-4">
           {/* Core Branding: BIM Portfolio + Vertical ENGINEER */}
@@ -214,14 +215,15 @@ export default function Hero({ isDarkMode }: { isDarkMode: boolean }) {
           initial={{ opacity: 0, y: 15 }}
           animate={{ opacity: 1, y: 0 }}
           transition={reduceMotion ? { duration: 0 } : { duration: 0.5, delay: 0.19, ease: [0.22, 1, 0.36, 1] }}
-          className={`min-h-[40px] font-mono text-sm sm:text-base md:text-lg flex items-center gap-1.5 mb-8 select-all ${
+          className={`min-h-[40px] font-mono text-sm sm:text-base md:text-lg flex items-center gap-1.5 mb-8 ${
             isDarkMode ? 'text-[#00d4ff]' : 'text-blue-600'
           }`}
         >
           <span className={`${isDarkMode ? 'text-[#00d4ff] opacity-60' : 'text-slate-650 opacity-80'} font-semibold`}>&gt;</span>
           <span className={`${isDarkMode ? 'text-[#cde8ff] opacity-70' : 'text-slate-800 opacity-80'} font-light`}>saisoummein</span>
           <span className={`${isDarkMode ? 'text-[#00d4ff]' : 'text-blue-600'} font-semibold`}>~</span>
-          <span>{displayedText}</span>
+          <span aria-hidden="true">{displayedText}</span>
+          <span className="sr-only">Sai Soum Mein builds retrieval systems, data pipelines and the products around them.</span>
           <span className={`inline-block w-[8px] h-[1.1em] ${isDarkMode ? 'bg-[#00d4ff]' : 'bg-blue-600'} ${reduceMotion ? '' : 'animate-[blink_1.05s_step-end_infinite]'} align-middle`} />
         </motion.div>
 
@@ -234,24 +236,24 @@ export default function Hero({ isDarkMode }: { isDarkMode: boolean }) {
         >
           <button
             onClick={() => handleScrollTo('#projects')}
-            className={`group relative px-6 py-3.5 font-mono text-sm uppercase tracking-[3px] border overflow-hidden transition-ui cursor-pointer ${
+            className={`group relative px-6 py-3.5 font-mono text-sm uppercase tracking-[3px] border overflow-hidden transition-ui cursor-pointer active:scale-[0.98] motion-reduce:active:scale-100 ${
               isDarkMode 
                 ? 'text-[#00d4ff] border-[#00d4ff]/30 bg-[#00d4ff]/5 hover:border-[#00d4ff] hover:text-[#020c1b]'
                 : 'text-blue-600 border-blue-600/30 bg-blue-600/5 hover:border-blue-600 hover:text-white'
             }`}
           >
-            <div className={`absolute inset-0 w-full h-full transition-transform duration-300 transform -translate-x-full group-hover:translate-x-0 -z-10 ${
+            <div className={`absolute inset-0 w-full h-full transition-transform duration-[260ms] ease-[cubic-bezier(0.22,1,0.36,1)] transform -translate-x-full group-hover:translate-x-0 -z-10 ${
               isDarkMode ? 'bg-[#00d4ff]' : 'bg-blue-600'
             }`} />
             <span className="relative flex items-center gap-2">
               View Work
-              <ChevronRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+              <ChevronRight className="w-3.5 h-3.5 transition-transform duration-[160ms] ease-[cubic-bezier(0.22,1,0.36,1)] group-hover:translate-x-1 motion-reduce:transition-none" />
             </span>
           </button>
 
           <button
             onClick={() => handleScrollTo('#contact')}
-            className={`group px-6 py-3.5 font-mono text-sm uppercase tracking-[3px] border transition-ui cursor-pointer ${
+            className={`group px-6 py-3.5 font-mono text-sm uppercase tracking-[3px] border transition-ui cursor-pointer active:scale-[0.98] motion-reduce:active:scale-100 ${
               isDarkMode 
                 ? 'text-[#4a6d8c] border-[#4a6d8c]/30 hover:border-[#cde8ff] hover:text-[#cde8ff]'
                 : 'text-slate-655 border-slate-300 hover:border-slate-800 hover:text-slate-900'
@@ -265,18 +267,20 @@ export default function Hero({ isDarkMode }: { isDarkMode: boolean }) {
       {/* Floating Scroll / portfolio 2026 indicator */}
       <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10 opacity-70">
         <span className={`font-mono text-[9px] tracking-[5px] uppercase ${isDarkMode ? 'text-[#4a6d8c]' : 'text-slate-500'}`}>PORTFOLIO 2026</span>
-        <motion.div
+        <motion.button
+          type="button"
+          aria-label="Scroll to the next section"
           animate={reduceMotion ? { y: 0 } : { y: [0, 7, 0] }}
           transition={
             reduceMotion
               ? { duration: 0 }
               : { repeat: Infinity, duration: 2.4, ease: [0.4, 0, 0.2, 1], repeatDelay: 0.6 }
           }
-          className="cursor-pointer"
+          className="cursor-pointer rounded-sm p-1 active:scale-95 motion-reduce:active:scale-100"
           onClick={() => handleScrollTo('#about')}
         >
           <ArrowDown className={`w-4 h-4 ${isDarkMode ? 'text-[#00d4ff]' : 'text-blue-600'}`} />
-        </motion.div>
+        </motion.button>
       </div>
 
       <style>{`

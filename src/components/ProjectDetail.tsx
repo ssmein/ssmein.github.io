@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { motion } from 'motion/react';
+import { motion, useReducedMotion } from 'motion/react';
 import { ArrowLeft, Clock } from 'lucide-react';
 import { Project } from '../types';
 
@@ -10,28 +10,40 @@ interface ProjectDetailProps {
 }
 
 export default function ProjectDetail({ project, onClose, isDarkMode }: ProjectDetailProps) {
+  const reduceMotion = useReducedMotion();
+
   useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }, [project.id]);
+    window.scrollTo({ top: 0, behavior: reduceMotion ? 'auto' : 'smooth' });
+  }, [project.id, reduceMotion]);
+
+  /*
+   * The page-level enter/exit lives in App.tsx. What happens here is the
+   * second beat: once the subpage has arrived, the instrument panel reads
+   * itself out in order — mark, then identification, then status, then the
+   * way back. Four steps, not one per element, and the breadcrumb stays put
+   * so there is a fixed point to orient against.
+   */
+  const ease = [0.22, 1, 0.36, 1] as const;
 
   return (
-    <section 
+    <section
       id={`project-detail-${project.id}`}
-      className="min-h-[70vh] py-12 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto flex flex-col justify-between animate-fade-in animate-duration-300"
+      className="min-h-[70vh] py-12 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto flex flex-col justify-between"
     >
       {/* Navigation Breadcrumb */}
       <div className={`flex items-center justify-between border-b pb-6 ${isDarkMode ? 'border-slate-800' : 'border-slate-300'}`}>
         <button
+          type="button"
           onClick={onClose}
           id="back-to-portfolio-btn"
-          className={`group flex items-center gap-2 font-mono text-xs uppercase tracking-wider transition-colors cursor-pointer ${
+          className={`group flex items-center gap-2 font-mono text-xs uppercase tracking-wider transition-ui cursor-pointer rounded-xs px-1 -mx-1 py-0.5 active:scale-[0.98] motion-reduce:active:scale-100 ${
             isDarkMode ? 'text-slate-400 hover:text-white' : 'text-slate-700 hover:text-black'
           }`}
         >
-          <ArrowLeft className="w-4 h-4 transition-transform group-hover:-translate-x-1" />
+          <ArrowLeft className="w-4 h-4 transition-transform duration-[160ms] ease-[cubic-bezier(0.4,0,0.2,1)] group-hover:-translate-x-1 group-focus-visible:-translate-x-1 group-active:-translate-x-1.5 motion-reduce:group-hover:translate-x-0 motion-reduce:group-focus-visible:translate-x-0 motion-reduce:group-active:translate-x-0" />
           <span>Back to Projects</span>
         </button>
-        
+
         <div className={`flex items-center gap-2 text-xs font-mono ${isDarkMode ? 'text-slate-500' : 'text-slate-600'}`}>
           <span>Case Study</span>
           <span>/</span>
@@ -42,9 +54,10 @@ export default function ProjectDetail({ project, onClose, isDarkMode }: ProjectD
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col items-center justify-center my-16 space-y-8 text-center">
         <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
+          key={`${project.id}-mark`}
+          initial={reduceMotion ? false : { opacity: 0, scale: 0.94 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.4 }}
+          transition={{ duration: reduceMotion ? 0 : 0.42, delay: reduceMotion ? 0 : 0.04, ease }}
           className={`p-6 rounded-full border ${
             isDarkMode ? 'bg-slate-900/50 border-slate-800/80' : 'bg-slate-100 border-slate-200'
           }`}
@@ -53,39 +66,66 @@ export default function ProjectDetail({ project, onClose, isDarkMode }: ProjectD
         </motion.div>
 
         <div className="space-y-4">
-          <span className={`font-mono text-xs tracking-wider uppercase px-2.5 py-1 border rounded-sm font-semibold ${
-            isDarkMode
-              ? 'border-[#00d4ff]/20 text-[#00d4ff] bg-[#00d4ff]/5'
-              : project.category === 'Analytics'
-                ? 'border-[#155DFC]/30 text-[#155DFC] bg-[#155DFC]/5'
-                : 'border-blue-400 text-blue-900 bg-blue-100/55'
-          }`}>
-            {project.category}
-          </span>
-          <h1 className={`font-sans text-3xl sm:text-4xl font-bold tracking-tight pt-2 ${isDarkMode ? 'text-white' : 'text-black'}`}>
-            {project.title}
-          </h1>
-          <p className="font-mono text-lg font-bold text-[#155DFC] uppercase tracking-widest pt-4 pb-1">
-            Stay Tuned
-          </p>
-          <p className={`font-sans text-sm sm:text-base max-w-sm mx-auto leading-relaxed ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
-            Case study content and technical details for this project are currently being prepared.
-          </p>
+          {/* Identification: category + title resolve together as one plate. */}
+          <motion.div
+            key={`${project.id}-id`}
+            initial={reduceMotion ? false : { opacity: 0, y: 12, filter: 'blur(5px)' }}
+            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+            transition={{ duration: reduceMotion ? 0 : 0.42, delay: reduceMotion ? 0 : 0.12, ease }}
+            className="space-y-4"
+          >
+            <span className={`font-mono text-xs tracking-wider uppercase px-2.5 py-1 border rounded-sm font-semibold ${
+              isDarkMode
+                ? 'border-[#00d4ff]/20 text-[#00d4ff] bg-[#00d4ff]/5'
+                : project.category === 'Analytics'
+                  ? 'border-[#155DFC]/30 text-[#155DFC] bg-[#155DFC]/5'
+                  : 'border-blue-400 text-blue-900 bg-blue-100/55'
+            }`}>
+              {project.category}
+            </span>
+            <h1 className={`font-sans text-3xl sm:text-4xl font-bold tracking-tight pt-2 ${isDarkMode ? 'text-white' : 'text-black'}`}>
+              {project.title}
+            </h1>
+          </motion.div>
+
+          {/* Status: shorter travel, no blur — it reads as a later line, not a repeat. */}
+          <motion.div
+            key={`${project.id}-status`}
+            initial={reduceMotion ? false : { opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: reduceMotion ? 0 : 0.4, delay: reduceMotion ? 0 : 0.2, ease }}
+            className="space-y-4"
+          >
+            <p className="font-mono text-lg font-bold text-[#155DFC] uppercase tracking-widest pt-4 pb-1">
+              Stay Tuned
+            </p>
+            <p className={`font-sans text-sm sm:text-base max-w-sm mx-auto leading-relaxed ${isDarkMode ? 'text-slate-400' : 'text-slate-600'}`}>
+              Case study content and technical details for this project are currently being prepared.
+            </p>
+          </motion.div>
         </div>
       </div>
 
-      <div className={`border-t pt-6 flex justify-center ${isDarkMode ? 'border-slate-800' : 'border-slate-300'}`}>
+      {/* The exit stays available but arrives last and without travel. */}
+      <motion.div
+        key={`${project.id}-exit`}
+        initial={reduceMotion ? false : { opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: reduceMotion ? 0 : 0.38, delay: reduceMotion ? 0 : 0.28, ease }}
+        className={`border-t pt-6 flex justify-center ${isDarkMode ? 'border-slate-800' : 'border-slate-300'}`}
+      >
         <button
+          type="button"
           onClick={onClose}
-          className={`px-6 py-2 border font-mono text-xs uppercase tracking-wider transition-ui cursor-pointer rounded-xs ${
-            isDarkMode 
-              ? 'border-slate-800 hover:border-slate-600 text-slate-300 hover:text-white' 
+          className={`px-6 py-2 border font-mono text-xs uppercase tracking-wider transition-ui cursor-pointer rounded-xs active:scale-[0.98] motion-reduce:active:scale-100 ${
+            isDarkMode
+              ? 'border-slate-800 hover:border-slate-600 text-slate-300 hover:text-white'
               : 'border-slate-350 hover:border-slate-800 text-slate-800 hover:text-black'
           }`}
         >
           Return to Projects
         </button>
-      </div>
+      </motion.div>
     </section>
   );
 }
