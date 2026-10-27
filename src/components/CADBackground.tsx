@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { useReducedMotion } from 'motion/react';
 
 interface FireParticle {
   x: number;
@@ -20,10 +21,29 @@ interface CADBackgroundProps {
   isDarkMode: boolean;
 }
 
+// Hard ceiling on simultaneously simulated particles.
+const MAX_PARTICLES = 350;
+// Work cap: never step the simulation faster than ~90Hz, so a 144Hz/240Hz
+// display does not burn 2-4x the frames for an identical looking result.
+const MIN_FRAME_MS = 1000 / 90;
+
 export default function CADBackground({ isDarkMode }: CADBackgroundProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<FireParticle[]>([]);
-  const mouseRef = useRef({ x: -1000, y: -1000, vx: 0, vy: 0, lastX: -1000, lastY: -1000, active: false });
+  const mouseRef = useRef({
+    x: -1000,
+    y: -1000,
+    vx: 0,
+    vy: 0,
+    dx: 0,
+    dy: 0,
+    lastX: -1000,
+    lastY: -1000,
+    active: false,
+    moved: false
+  });
+
+  const reduceMotion = useReducedMotion();
 
   // Keep track of theme inside the render loop
   const isDarkModeRef = useRef(isDarkMode);
@@ -38,51 +58,87 @@ export default function CADBackground({ isDarkMode }: CADBackgroundProps) {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    const resizeCanvas = () => {
+    // Reduced motion: no loop, no listeners, no particles. A static empty
+    // frame instead of a continuously running simulation.
+    if (reduceMotion) {
+      particlesRef.current.length = 0;
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      return;
+    }
+
+    let resizeQueued = false;
+    const applyResize = () => {
+      resizeQueued = false;
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      // Writing width/height clears the canvas, so skip no-op resizes
+      // (mobile browser chrome fires resize while scrolling).
+      if (canvas.width === w && canvas.height === h) return;
+      canvas.width = w;
+      canvas.height = h;
     };
-    resizeCanvas();
+    const resizeCanvas = () => {
+      if (resizeQueued) return;
+      resizeQueued = true;
+      requestAnimationFrame(applyResize);
+    };
+    applyResize();
     window.addEventListener('resize', resizeCanvas);
 
+    // Pointer events can fire far more often than frames on high-polling-rate
+    // mice. Record movement here; spawn once per simulated frame instead.
     const handleMouseMove = (e: MouseEvent) => {
       const mouse = mouseRef.current;
-      
-      // Calculate velocity of mouse movement to inject kinetic energy into fire
+
+      // Accumulate travel so mouse-driven kinetic energy stays correct even
+      // when several events land inside a single frame.
       if (mouse.lastX !== -1000) {
-        mouse.vx = (e.clientX - mouse.lastX) * 0.15;
-        mouse.vy = (e.clientY - mouse.lastY) * 0.15;
+        mouse.dx += e.clientX - mouse.lastX;
+        mouse.dy += e.clientY - mouse.lastY;
       }
       mouse.lastX = e.clientX;
       mouse.lastY = e.clientY;
       mouse.x = e.clientX;
       mouse.y = e.clientY;
       mouse.active = true;
+      mouse.moved = true;
+    };
+
+    const handleMouseLeave = () => {
+      const mouse = mouseRef.current;
+      mouse.active = false;
+      mouse.moved = false;
+      mouse.dx = 0;
+      mouse.dy = 0;
+      mouse.lastX = -1000;
+      mouse.lastY = -1000;
+    };
+
+    const spawnBurst = (x: number, y: number, mvx: number, mvy: number) => {
+      const particles = particlesRef.current;
+      if (particles.length >= MAX_PARTICLES) return;
 
       const isDark = isDarkModeRef.current;
 
       // Spawn flame body particles
-      const flameCount = Math.floor(Math.random() * 2) + 2; 
+      const flameCount = Math.floor(Math.random() * 2) + 2;
       for (let i = 0; i < flameCount; i++) {
         const offsetAngle = Math.random() * Math.PI * 2;
         const offsetDist = Math.random() * 8;
-        const px = e.clientX + Math.cos(offsetAngle) * offsetDist;
-        const py = e.clientY + Math.sin(offsetAngle) * offsetDist;
+        const px = x + Math.cos(offsetAngle) * offsetDist;
+        const py = y + Math.sin(offsetAngle) * offsetDist;
 
         // Custom organic float & thermal velocity
-        const vx = (Math.random() - 0.5) * 0.8 + mouse.vx * 0.4;
-        const vy = -(1.2 + Math.random() * 1.5) + mouse.vy * 0.4;
+        const vx = (Math.random() - 0.5) * 0.8 + mvx * 0.4;
+        const vy = -(1.2 + Math.random() * 1.5) + mvy * 0.4;
 
-        // Dynamic hues: 10-25 for fiery reds, 25-45 for burning orange, 50-60 for gold sparks
-        // If in dark mode, we can make it highly colorful cosmic fire (blue fire matching theme!)
-        // "look like fire that vanish above". Let's make it a gorgeous electric blue-cyan fire when dark, 
-        // and blue/teal fire when light mode, or a classic warm energetic fire.
-        // Let's use gorgeous flame tones. Cyan/Electric-Blue fire fits the digital twin theme beautifully!
-        // To satisfy both requests, let's create highly vivid heat fire (electric-cyan-blue in dark mode, and gradient rich sapphire-blue fire in light mode).
-        const baseHue = isDark ? 185 : 210; // Cyan of theme vs bright deep royal blue
+        // Electric cyan fire in dark mode, deep sapphire blue fire in light mode.
+        const baseHue = isDark ? 185 : 210;
         const hueVariation = (Math.random() - 0.5) * 35;
 
-        particlesRef.current.push({
+        particles.push({
           x: px,
           y: py,
           vx: vx,
@@ -102,15 +158,14 @@ export default function CADBackground({ isDarkMode }: CADBackgroundProps) {
       // Spawn bright spark embers
       if (Math.random() < 0.65) {
         const sparkCount = Math.floor(Math.random() * 3) + 1;
+        const baseHue = isDark ? 190 : 215;
         for (let i = 0; i < sparkCount; i++) {
-          const vx = (Math.random() - 0.5) * 3.5 + mouse.vx * 0.6;
+          const vx = (Math.random() - 0.5) * 3.5 + mvx * 0.6;
           const vy = -(3.0 + Math.random() * 4.0); // fast shootup
-          const isDark = isDarkModeRef.current;
-          const baseHue = isDark ? 190 : 215;
 
-          particlesRef.current.push({
-            x: e.clientX,
-            y: e.clientY,
+          particles.push({
+            x: x,
+            y: y,
             vx: vx,
             vy: vy,
             size: 0.8 + Math.random() * 1.5,
@@ -128,9 +183,9 @@ export default function CADBackground({ isDarkMode }: CADBackgroundProps) {
 
       // Spawn smoke trail particles
       if (Math.random() < 0.35) {
-        particlesRef.current.push({
-          x: e.clientX,
-          y: e.clientY,
+        particles.push({
+          x: x,
+          y: y,
           vx: (Math.random() - 0.5) * 0.6,
           vy: -(0.5 + Math.random() * 0.7),
           size: 4 + Math.random() * 4,
@@ -146,15 +201,31 @@ export default function CADBackground({ isDarkMode }: CADBackgroundProps) {
       }
     };
 
-    const handleMouseLeave = () => {
-      mouseRef.current.active = false;
-      mouseRef.current.lastX = -1000;
-      mouseRef.current.lastY = -1000;
-    };
+    let animationId = 0;
+    let running = false;
+    let lastFrameTime = 0;
 
-    let animationId: number;
+    const render = (now: number) => {
+      animationId = requestAnimationFrame(render);
 
-    const render = () => {
+      // Frame cap: the simulation is frame-stepped, so throttling here bounds
+      // per-frame work and keeps the motion consistent across refresh rates.
+      if (now - lastFrameTime < MIN_FRAME_MS) return;
+      lastFrameTime = now;
+
+      const mouse = mouseRef.current;
+      const particles = particlesRef.current;
+
+      // Resolve this frame's pointer velocity from the accumulated travel.
+      if (mouse.moved) {
+        mouse.vx = mouse.dx * 0.15;
+        mouse.vy = mouse.dy * 0.15;
+        mouse.dx = 0;
+        mouse.dy = 0;
+        mouse.moved = false;
+        if (mouse.active) spawnBurst(mouse.x, mouse.y, mouse.vx, mouse.vy);
+      }
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       const isDark = isDarkModeRef.current;
 
@@ -171,7 +242,11 @@ export default function CADBackground({ isDarkMode }: CADBackgroundProps) {
         ctx.globalCompositeOperation = 'source-over';
       }
 
-      particlesRef.current.forEach((p) => {
+      // Single pass: simulate, draw, and compact in place, so no throwaway
+      // array is allocated every frame.
+      let write = 0;
+      for (let i = 0; i < particles.length; i++) {
+        const p = particles[i];
         p.age++;
 
         // Physics: rising up, slowly fading out, applying air resistance left/right
@@ -196,8 +271,8 @@ export default function CADBackground({ isDarkMode }: CADBackgroundProps) {
           p.alpha = 0.9 * (1 - lifePercent);
 
           const chroma = isDark ? '85%' : '90%';
-          const light = isDark 
-            ? `${Math.floor(45 + (1 - lifePercent) * 25)}%` 
+          const light = isDark
+            ? `${Math.floor(45 + (1 - lifePercent) * 25)}%`
             : `${Math.floor(40 + (1 - lifePercent) * 30)}%`;
 
           // Dynamic radial heat gradient to look like gorgeous glowing flames (with crisp boundaries, no soft outer shadowy haze)
@@ -236,8 +311,8 @@ export default function CADBackground({ isDarkMode }: CADBackgroundProps) {
           p.size = p.startSize * (1 + lifePercent * 1.4);
           p.alpha = 0.3 * (1 - lifePercent);
 
-          const smokeColor = isDark 
-            ? `rgba(74, 109, 140, ${p.alpha * 0.15})` // bluish/slate dust cloud 
+          const smokeColor = isDark
+            ? `rgba(74, 109, 140, ${p.alpha * 0.15})` // bluish/slate dust cloud
             : `rgba(100, 116, 139, ${p.alpha * 0.1})`;
 
           ctx.fillStyle = smokeColor;
@@ -245,40 +320,70 @@ export default function CADBackground({ isDarkMode }: CADBackgroundProps) {
           ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
           ctx.fill();
         }
-      });
 
-      // Filter out completed particles for outstanding reactivity & frames
-      particlesRef.current = particlesRef.current.filter(
-        (p) => p.age < p.maxAge && p.alpha > 0.01 && p.y > -50
-      );
+        // Keep only live particles (same liveness test as before, compacted in place)
+        if (p.age < p.maxAge && p.alpha > 0.01 && p.y > -50) {
+          particles[write++] = p;
+        }
+      }
+      particles.length = write;
 
       // Keep maximum particle buffer protected to avoid browser lag
-      if (particlesRef.current.length > 350) {
-        particlesRef.current.splice(0, particlesRef.current.length - 350);
+      if (particles.length > MAX_PARTICLES) {
+        particles.splice(0, particles.length - MAX_PARTICLES);
       }
 
       // Reset cursor friction velocity
-      mouseRef.current.vx *= 0.85;
-      mouseRef.current.vy *= 0.85;
+      mouse.vx *= 0.85;
+      mouse.vy *= 0.85;
+    };
 
+    const start = () => {
+      if (running) return;
+      running = true;
+      lastFrameTime = performance.now() - MIN_FRAME_MS;
       animationId = requestAnimationFrame(render);
     };
 
-    render();
-    window.addEventListener('mousemove', handleMouseMove);
+    const stop = () => {
+      if (!running) return;
+      running = false;
+      cancelAnimationFrame(animationId);
+      animationId = 0;
+    };
+
+    // Stop entirely in a background tab instead of burning frames there.
+    const handleVisibilityChange = () => {
+      if (document.hidden) {
+        stop();
+        particlesRef.current.length = 0;
+        handleMouseLeave();
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      } else {
+        start();
+      }
+    };
+
+    if (!document.hidden) start();
+
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
     window.addEventListener('mouseleave', handleMouseLeave);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
 
     return () => {
+      stop();
       window.removeEventListener('resize', resizeCanvas);
       window.removeEventListener('mousemove', handleMouseMove);
       window.removeEventListener('mouseleave', handleMouseLeave);
-      cancelAnimationFrame(animationId);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      particlesRef.current.length = 0;
     };
-  }, []);
+  }, [reduceMotion]);
 
   return (
     <canvas
       ref={canvasRef}
+      aria-hidden="true"
       className="fixed inset-0 pointer-events-none z-[9999]"
       style={{ mixBlendMode: isDarkMode ? 'screen' : 'normal' }}
     />

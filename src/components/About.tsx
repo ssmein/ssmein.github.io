@@ -74,6 +74,16 @@ function AnimatedCounter({ target, suffix, isDarkMode }: CounterProps) {
 export default function About({ isDarkMode }: { isDarkMode: boolean }) {
   const reduceMotion = useReducedMotion();
 
+  // behavior:'smooth' in the options object overrides the reduced-motion rule
+  // in index.css, so the preference has to be honoured explicitly here.
+  const goToEducation = (enabled: boolean) => {
+    if (!enabled) return;
+    document.getElementById('education')?.scrollIntoView({
+      behavior: reduceMotion ? 'auto' : 'smooth',
+      block: 'start',
+    });
+  };
+
   return (
     <section 
       id="about" 
@@ -118,16 +128,23 @@ export default function About({ isDarkMode }: { isDarkMode: boolean }) {
                     ? { duration: 0 }
                     : { duration: 0.42, delay: idx * 0.055, ease: [0.22, 1, 0.36, 1] }
                 }
-                onClick={() => {
-                  if (isCerts) {
-                    const el = document.getElementById('education');
-                    if (el) {
-                      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                    }
+                // whileInView writes an inline transform, which outranks a
+                // hover:scale utility — so the old hover never fired. Hand the
+                // hover to Motion instead, where it composes correctly.
+                whileHover={isCerts && !reduceMotion ? { scale: 1.02 } : undefined}
+                whileTap={isCerts && !reduceMotion ? { scale: 0.995 } : undefined}
+                role={isCerts ? 'button' : undefined}
+                tabIndex={isCerts ? 0 : undefined}
+                aria-label={isCerts ? 'Jump to education and credentials' : undefined}
+                onClick={() => goToEducation(isCerts)}
+                onKeyDown={(e) => {
+                  if (isCerts && (e.key === 'Enter' || e.key === ' ')) {
+                    e.preventDefault();
+                    goToEducation(isCerts);
                   }
                 }}
                 className={`p-6 flex flex-col justify-center items-center text-center rounded-sm transition-ui group border ${
-                  isCerts ? 'cursor-pointer hover:scale-[1.02]' : ''
+                  isCerts ? 'cursor-pointer' : ''
                 } ${
                   isDarkMode 
                     ? 'bg-[#041325]/40 border-[#00d4ff]/10 hover:border-[#00d4ff]/30' 

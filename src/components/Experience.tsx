@@ -1,11 +1,67 @@
 import { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
+import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
+import type { Variants } from 'motion/react';
 import { MapPin, GraduationCap, Award, Calendar, BookOpen, ExternalLink, FileText, X, ShieldCheck } from 'lucide-react';
 import { experienceData, educationData, certificationData, specialCourseData } from '../data';
 import { SpecialCourse } from '../types';
 
+/* Mirrors --ease-out-quint / --ease-in-quart / --ease-standard in index.css. */
+const EASE_OUT_QUINT: [number, number, number, number] = [0.22, 1, 0.36, 1];
+const EASE_IN_QUART: [number, number, number, number] = [0.5, 0, 0.75, 0];
+const EASE_STANDARD: [number, number, number, number] = [0.4, 0, 0.2, 1];
+
+/*
+ * A timeline node arrives in two beats rather than as one flat fade:
+ * the record settles into place first, then its marker is pinned onto
+ * the rail. That ordering is the point — it reads as "this entry is
+ * being plotted on the timeline", not as a generic reveal.
+ *
+ * `custom` carries the small intra-screen stagger (capped, see usage).
+ */
+const recordVariants: Variants = {
+  hidden: { opacity: 0, y: 14, filter: 'blur(6px)' },
+  visible: (delay: number = 0) => ({
+    opacity: 1,
+    y: 0,
+    filter: 'blur(0px)',
+    transition: {
+      duration: 0.44,
+      ease: EASE_OUT_QUINT,
+      delay,
+      delayChildren: delay + 0.18,
+    },
+  }),
+};
+
+/* Education/credential entries are lighter and far more numerous, so they
+   get the same choreography without the blur pass. */
+const entryVariants: Variants = {
+  hidden: { opacity: 0, y: 10 },
+  visible: (delay: number = 0) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.38,
+      ease: EASE_OUT_QUINT,
+      delay,
+      delayChildren: delay + 0.14,
+    },
+  }),
+};
+
+/* The marker pops in after its record has landed. */
+const markerVariants: Variants = {
+  hidden: { opacity: 0, scale: 0.4 },
+  visible: { opacity: 1, scale: 1, transition: { duration: 0.28, ease: EASE_OUT_QUINT } },
+};
+
+/* Cap the stagger: whileInView fires per-node as you scroll, so an
+   uncapped idx * delay would just become dead air further down the list. */
+const staggerFor = (idx: number) => Math.min(idx, 2) * 0.07;
+
 export default function Experience({ isDarkMode }: { isDarkMode: boolean }) {
   const [selectedCourse, setSelectedCourse] = useState<SpecialCourse | null>(null);
+  const reduceMotion = useReducedMotion();
 
   // Combine Degrees (educationData) and Certifications (specialCourseData) in chronological order
   const timelineItems = [
@@ -84,7 +140,7 @@ export default function Experience({ isDarkMode }: { isDarkMode: boolean }) {
               <button
                 onClick={scrollToEducation}
                 id="experience-goto-education"
-                className={`px-4 py-2.5 border font-mono text-xs uppercase tracking-wider transition-ui rounded-xs cursor-pointer focus:outline-none flex items-center gap-2 font-semibold ${
+                className={`px-4 py-2.5 border font-mono text-xs uppercase tracking-wider transition-ui active:scale-[0.98] motion-reduce:active:scale-100 rounded-xs cursor-pointer focus:outline-none flex items-center gap-2 font-semibold ${
                   isDarkMode
                     ? 'border-[#00d4ff]/40 text-[#00d4ff] bg-[#00d4ff]/5 hover:bg-[#00d4ff]/15 hover:border-[#00d4ff]'
                     : 'border-blue-200 text-blue-700 bg-blue-50/70 hover:bg-blue-100/50 hover:border-blue-400 shadow-xs'
@@ -119,21 +175,27 @@ export default function Experience({ isDarkMode }: { isDarkMode: boolean }) {
               {experienceData.map((exp, idx) => (
                 <motion.div
                   key={exp.id}
-                  initial={{ opacity: 0, x: -20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
+                  variants={recordVariants}
+                  custom={staggerFor(idx)}
+                  initial={reduceMotion ? 'visible' : 'hidden'}
+                  whileInView="visible"
                   viewport={{ once: true, margin: '-100px' }}
-                  transition={{ duration: 0.6, delay: idx * 0.15 }}
                   className="relative"
                 >
                   {/* Timeline diamond point marker */}
-                  <div 
-                    className={`absolute -left-[31px] sm:-left-[47px] top-1.5 w-4 h-4 border transform rotate-45 flex items-center justify-center ${
-                      isDarkMode ? 'bg-[#000000] border-[#00d4ff]' : 'bg-white border-blue-600'
-                    }`}
-                    style={isDarkMode ? { boxShadow: '0 0 10px rgba(0, 212, 255, 0.3)' } : undefined}
+                  <motion.div
+                    variants={markerVariants}
+                    className="absolute -left-[31px] sm:-left-[47px] top-1.5"
                   >
-                    <div className={`w-1.5 h-1.5 ${isDarkMode ? 'bg-[#39ff14]' : 'bg-blue-600'}`} />
-                  </div>
+                    <div
+                      className={`w-4 h-4 border transform rotate-45 flex items-center justify-center ${
+                        isDarkMode ? 'bg-[#000000] border-[#00d4ff]' : 'bg-white border-blue-600'
+                      }`}
+                      style={isDarkMode ? { boxShadow: '0 0 10px rgba(0, 212, 255, 0.3)' } : undefined}
+                    >
+                      <div className={`w-1.5 h-1.5 ${isDarkMode ? 'bg-[#39ff14]' : 'bg-blue-600'}`} />
+                    </div>
+                  </motion.div>
 
                   {/* Card container */}
                   <div className={`p-6 rounded-sm space-y-4 border transition-ui ${
@@ -233,7 +295,7 @@ export default function Experience({ isDarkMode }: { isDarkMode: boolean }) {
             <div className="self-start md:self-end">
               <button
                 onClick={() => document.getElementById('experience')?.scrollIntoView({ behavior: 'smooth' })}
-                className={`text-xs font-mono hover:underline focus:outline-none flex items-center gap-1.5 uppercase ${
+                className={`text-xs font-mono hover:underline focus:outline-none flex items-center gap-1.5 uppercase cursor-pointer transition-ui active:scale-[0.98] motion-reduce:active:scale-100 ${
                   isDarkMode ? 'text-slate-400 hover:text-white' : 'text-slate-500 hover:text-slate-950'
                 }`}
               >
@@ -252,21 +314,27 @@ export default function Experience({ isDarkMode }: { isDarkMode: boolean }) {
                   return (
                     <motion.div
                       key={item.id}
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
+                      variants={entryVariants}
+                      custom={staggerFor(idx)}
+                      initial={reduceMotion ? 'visible' : 'hidden'}
+                      whileInView="visible"
                       viewport={{ once: true, margin: '-100px' }}
-                      transition={{ duration: 0.5, delay: idx * 0.1 }}
                       className="relative"
                     >
                       {/* Timeline Academic Cap point marker */}
-                      <div 
-                        className={`absolute -left-[31px] sm:-left-[47px] top-1.5 w-4 h-4 border transform rotate-45 flex items-center justify-center ${
-                          isDarkMode ? 'bg-[#000000] border-[#00d4ff]' : 'bg-white border-blue-600'
-                        }`}
-                        style={isDarkMode ? { boxShadow: '0 0 10px rgba(0, 212, 255, 0.3)' } : undefined}
+                      <motion.div
+                        variants={markerVariants}
+                        className="absolute -left-[31px] sm:-left-[47px] top-1.5"
                       >
-                        <div className={`w-1.5 h-1.5 ${isDarkMode ? 'bg-[#00d4ff]' : 'bg-blue-600'}`} />
-                      </div>
+                        <div
+                          className={`w-4 h-4 border transform rotate-45 flex items-center justify-center ${
+                            isDarkMode ? 'bg-[#000000] border-[#00d4ff]' : 'bg-white border-blue-600'
+                          }`}
+                          style={isDarkMode ? { boxShadow: '0 0 10px rgba(0, 212, 255, 0.3)' } : undefined}
+                        >
+                          <div className={`w-1.5 h-1.5 ${isDarkMode ? 'bg-[#00d4ff]' : 'bg-blue-600'}`} />
+                        </div>
+                      </motion.div>
 
                       {/* Card wrapper */}
                       <div className={`p-6 rounded-sm space-y-4 border transition-ui ${
@@ -315,7 +383,7 @@ export default function Experience({ isDarkMode }: { isDarkMode: boolean }) {
                                         href={url} 
                                         target="_blank" 
                                         rel="noopener noreferrer" 
-                                        className={`underline font-semibold transition-opacity duration-200 cursor-pointer ${
+                                        className={`underline font-semibold transition-ui cursor-pointer ${
                                           isDarkMode ? 'text-[#00d4ff] hover:text-[#39ff14]' : 'text-[#155DFC] hover:text-blue-805'
                                         }`}
                                       >
@@ -340,10 +408,11 @@ export default function Experience({ isDarkMode }: { isDarkMode: boolean }) {
                   return (
                     <motion.div
                       key={item.id}
-                      initial={{ opacity: 0, x: -20 }}
-                      whileInView={{ opacity: 1, x: 0 }}
+                      variants={entryVariants}
+                      custom={staggerFor(idx)}
+                      initial={reduceMotion ? 'visible' : 'hidden'}
+                      whileInView="visible"
                       viewport={{ once: true, margin: '-100px' }}
-                      transition={{ duration: 0.5, delay: idx * 0.1 }}
                       className="relative group cursor-pointer"
                       onClick={() => setSelectedCourse({
                         id: item.id,
@@ -356,19 +425,24 @@ export default function Experience({ isDarkMode }: { isDarkMode: boolean }) {
                       })}
                     >
                       {/* Timeline Award point marker */}
-                      <div 
-                        className={`absolute -left-[30px] sm:-left-[46px] top-2.5 w-3.5 h-3.5 border transform rotate-45 flex items-center justify-center transition-ui group-hover:scale-110 ${
-                          isDarkMode ? 'bg-[#000000] border-[#39ff14]' : 'bg-white border-green-600'
-                        }`}
-                        style={isDarkMode ? { boxShadow: '0 0 10px rgba(57, 255, 20, 0.4)' } : undefined}
+                      <motion.div
+                        variants={markerVariants}
+                        className="absolute -left-[30px] sm:-left-[46px] top-2.5"
                       >
-                        <div className={`w-1.5 h-1.5 ${isDarkMode ? 'bg-[#39ff14]' : 'bg-green-600'}`} />
-                      </div>
+                        <div
+                          className={`w-3.5 h-3.5 border transform rotate-45 flex items-center justify-center transition-ui group-hover:scale-110 ${
+                            isDarkMode ? 'bg-[#000000] border-[#39ff14]' : 'bg-white border-green-600'
+                          }`}
+                          style={isDarkMode ? { boxShadow: '0 0 10px rgba(57, 255, 20, 0.4)' } : undefined}
+                        >
+                          <div className={`w-1.5 h-1.5 ${isDarkMode ? 'bg-[#39ff14]' : 'bg-green-600'}`} />
+                        </div>
+                      </motion.div>
 
-                      {/* Card wrapper - compact & smaller */}
-                      <div className={`p-4 sm:p-5 rounded-sm space-y-3.5 border transition-ui ${
-                        isDarkMode 
-                          ? 'bg-[#041325]/10 border-[#00d4ff]/10 hover:border-[#39ff14]/35 hover:bg-[#041325]/25' 
+                      {/* Card wrapper - compact & smaller. Clickable, so it takes press feedback. */}
+                      <div className={`p-4 sm:p-5 rounded-sm space-y-3.5 border transition-ui active:scale-[0.99] motion-reduce:active:scale-100 ${
+                        isDarkMode
+                          ? 'bg-[#041325]/10 border-[#00d4ff]/10 hover:border-[#39ff14]/35 hover:bg-[#041325]/25'
                           : 'bg-white shadow-xs border-slate-200 hover:border-green-400 hover:shadow-xs'
                       }`}>
                         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2">
@@ -420,16 +494,28 @@ export default function Experience({ isDarkMode }: { isDarkMode: boolean }) {
       <AnimatePresence>
         {selectedCourse && (
           <motion.div
-            initial={{ opacity: 0 }}
+            initial={reduceMotion ? false : { opacity: 0 }}
             animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            exit={{
+              opacity: 0,
+              transition: { duration: reduceMotion ? 0 : 0.16, ease: EASE_IN_QUART },
+            }}
+            transition={{ duration: reduceMotion ? 0 : 0.2, ease: EASE_STANDARD }}
             onClick={() => setSelectedCourse(null)}
             className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-xs cursor-pointer"
           >
             <motion.div
-              initial={{ scale: 0.95, y: 15 }}
-              animate={{ scale: 1, y: 0 }}
-              exit={{ scale: 0.95, y: 15 }}
+              initial={reduceMotion ? false : { opacity: 0, scale: 0.97, y: 12, filter: 'blur(5px)' }}
+              animate={{ opacity: 1, scale: 1, y: 0, filter: 'blur(0px)' }}
+              /* Dismissal is the cheaper half of the trip: shorter, no blur,
+                 and it lifts away instead of sinking back down. */
+              exit={{
+                opacity: 0,
+                scale: 0.985,
+                y: -6,
+                transition: { duration: reduceMotion ? 0 : 0.18, ease: EASE_IN_QUART },
+              }}
+              transition={{ duration: reduceMotion ? 0 : 0.4, ease: EASE_OUT_QUINT }}
               onClick={(e) => e.stopPropagation()}
               className={`w-full max-w-xl relative p-6 sm:p-8 border rounded-xs shadow-2xl cursor-default ${
                 isDarkMode
@@ -441,7 +527,7 @@ export default function Experience({ isDarkMode }: { isDarkMode: boolean }) {
               {/* Close Button */}
               <button
                 onClick={() => setSelectedCourse(null)}
-                className={`absolute top-4 right-4 p-1.5 rounded-full border transition-colors cursor-pointer ${
+                className={`absolute top-4 right-4 p-1.5 rounded-full border transition-ui active:scale-95 motion-reduce:active:scale-100 cursor-pointer ${
                   isDarkMode
                     ? 'border-slate-800 text-slate-400 hover:text-white hover:bg-slate-800/40'
                     : 'border-slate-200 text-slate-500 hover:text-slate-900 hover:bg-slate-100'
@@ -507,7 +593,7 @@ export default function Experience({ isDarkMode }: { isDarkMode: boolean }) {
                       href={selectedCourse.link}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className={`inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-sm font-mono text-xs uppercase tracking-wider font-bold transition-ui w-full ${
+                      className={`inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-sm font-mono text-xs uppercase tracking-wider font-bold transition-ui active:scale-[0.98] motion-reduce:active:scale-100 w-full ${
                         isDarkMode
                           ? 'bg-[#00d4ff]/10 hover:bg-[#00d4ff]/25 border border-[#00d4ff]/25 text-[#00d4ff]'
                           : 'bg-blue-50 hover:bg-blue-100 border border-blue-200 text-blue-700'
@@ -525,7 +611,7 @@ export default function Experience({ isDarkMode }: { isDarkMode: boolean }) {
                   <div className="pt-2 text-center">
                     <a
                       href="mailto:ssoummein@gmail.com?subject=Verification%20Request%3A%20Revit/Dynamo%20BIM%2520Certificate"
-                      className={`inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-sm font-mono text-xs uppercase tracking-wider font-bold transition-ui w-full ${
+                      className={`inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-sm font-mono text-xs uppercase tracking-wider font-bold transition-ui active:scale-[0.98] motion-reduce:active:scale-100 w-full ${
                         isDarkMode
                           ? 'bg-[#39ff14]/10 hover:bg-[#39ff14]/20 border border-[#39ff14]/20 text-[#39ff14]'
                           : 'bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 text-emerald-800'
